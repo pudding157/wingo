@@ -1,0 +1,1 @@
+docker build -t goserver . && docker run -it -p 3333:8000 goserver
