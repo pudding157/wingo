@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"winapp/controller"
 
 	"github.com/labstack/echo/v4"
 )
@@ -44,9 +45,7 @@ func register_module(e *echo.Echo) {
 	})
 
 	// register form submit
-	e.POST("/api/v1/register", func(c echo.Context) error {
-		return c.String(http.StatusOK, "register form submit")
-	})
+	e.POST("/api/v1/register", controller.Register)
 }
 
 func login_module(e *echo.Echo) {
