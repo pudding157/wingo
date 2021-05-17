@@ -1,0 +1,11 @@
+package models
+
+// import "time"
+// User struct
+type Otp_history struct {
+	Id         int    `gorm:"primary_key" json:"id"`
+	Type       int    `json:"type"`
+	Send_to    string `json:"send_to"`
+	Otp        int    `json:"otp"`
+	Created_at string `json:"created_at"`
+}

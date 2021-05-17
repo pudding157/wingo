@@ -15,7 +15,10 @@ type Config struct {
 
 // Database struct
 type Database struct {
-	Merchants []models.Merchant
+	Merchants   []models.Merchant
+	Bank        models.Bank
+	User        []models.User
+	Otp_history models.Otp_history
 }
 
 // NewConfig func
