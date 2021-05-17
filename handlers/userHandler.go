@@ -1,4 +1,4 @@
-package handler //เปรียบเสมือน namespace c#
+package handlers //เปรียบเสมือน namespace c#
 
 import (
 	"log"
