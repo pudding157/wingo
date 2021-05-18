@@ -74,6 +74,7 @@ func NewRouter(e *echo.Echo /*, c *app.Config*/) error {
 func register_module(e *echo.Echo) {
 
 	RegisterHandler := RegisterHandler()
+	BankHandler := BankHandler()
 	routes := []route{
 		{
 			HTTPMethod: http.MethodGet,
@@ -99,6 +100,12 @@ func register_module(e *echo.Echo) {
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/register",
 			HandlerFunc:    RegisterHandler.Register,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/bank",
+			HandlerFunc:    BankHandler.Get_all_bank,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
 	}

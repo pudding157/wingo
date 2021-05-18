@@ -9,11 +9,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
 // Handler struct
 type Handler struct {
+	DB *gorm.DB
 	// mService services.MerchantService
 	// pService services.ProductService
 	// rService services.ReportService
