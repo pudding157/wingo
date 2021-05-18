@@ -1,7 +1,7 @@
 package models
 
 // import "time"
-// User struct
+// Otp struct
 type Otp_history struct {
 	Id         int    `gorm:"primary_key" json:"id"`
 	Type       int    `json:"type"`

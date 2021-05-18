@@ -85,6 +85,18 @@ func register_module(e *echo.Echo) {
 		},
 		{
 			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/register/otp/send",
+			HandlerFunc:    RegisterHandler.Otp_send,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
+		{
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/register/otp",
+			HandlerFunc:    RegisterHandler.Otp,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
+		{
+			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/register",
 			HandlerFunc:    RegisterHandler.Register,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
