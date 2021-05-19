@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3333:8000"
+    networks:
+      - mysql
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: helloworld
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+      - ./db:/var/lib/mysql
+    networks:
+      - mysql
+networks:
+  mysql:
+    driver: bridge

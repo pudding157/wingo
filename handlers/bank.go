@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"log"
 	"winapp/models"
 
 	"net/http"
@@ -13,13 +12,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func BankHandler() *Handler {
-
-	// Initialize
-	db, err := gorm.Open("mysql", "root:helloworld@tcp(localhost:6603)/godb?charset=utf8&parseTime=True") //127.0.0.1:3306
-	if err != nil {
-		log.Fatal(err)
-	}
+func BankHandler(db *gorm.DB) *Handler {
 
 	Bank := []models.Bank{
 		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
