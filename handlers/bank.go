@@ -56,7 +56,8 @@ func (h Handler) Get_all_bank(c echo.Context) error {
 	bankModel := []BankModel{}
 
 	if err := h.DB.Find(&banks).Error; err != nil {
-		return c.NoContent(http.StatusNotFound)
+		fmt.Println("h.DB.Find(&banks) => ", err)
+		return c.JSON(http.StatusBadRequest, err)
 	}
 	for _, _bank := range banks {
 

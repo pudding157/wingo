@@ -15,11 +15,11 @@ func RequestHandlerMiddleware(config *app.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			pass := false
-			m := new(models.Merchant)
+			m := new(models.User)
 			if err := c.Bind(m); err != nil {
 				return utils.JSONResponse(c, nil, nil)
 			}
-			for _, mdb := range config.Db.Merchants {
+			for _, mdb := range config.Db.User {
 				if m.Username == mdb.Username && m.Password == mdb.Password {
 					pass = true
 				}

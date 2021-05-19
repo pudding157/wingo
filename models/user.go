@@ -4,14 +4,12 @@ package models
 // User struct
 type User struct {
 	Id               int    `gorm:"primary_key" json:"id"`
-	First_name       string `json:"first_name"`
-	Last_name        string `json:"last_name"`
-	Phone_number     string `json:"phone_number"`
-	Bank_id          int    `json:"bank_id"`
-	Bank_account     string `json:"bank_account"`
-	Username         string `json:"username"`
-	Password         string `json:"password"`
+	First_name       string `gorm:"not null" json:"first_name"`
+	Last_name        string `gorm:"not null" json:"last_name"`
+	Phone_number     string `gorm:"not null;unique" json:"phone_number"`
+	Username         string `gorm:"not null" json:"username"`
+	Password         string `gorm:"not null" json:"password"`
 	Created_at       string `json:"created_at"`
 	Updated_at       string `json:"updated_at"`
-	Registration_otp string `json:"registration_otp"`
+	Registration_otp string `gorm:"not null" json:"registration_otp"`
 }

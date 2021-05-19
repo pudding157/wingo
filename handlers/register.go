@@ -106,7 +106,7 @@ func (h Handler) Otp_send(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "400"
-		return c.JSON(http.StatusOK, _res)
+		return c.JSON(http.StatusBadRequest, _res)
 	}
 	// if err != nil {
 	// 	log.Fatal(err)

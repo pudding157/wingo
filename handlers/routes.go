@@ -110,6 +110,12 @@ func register_module(e *echo.Echo, db *gorm.DB) {
 			HandlerFunc:    BankHandler.Get_all_bank,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
+		{
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/login",
+			HandlerFunc:    BankHandler.Get_all_bank,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
 	}
 	// // get all bank
 	// e.GET("/api/v1/bank", func(c echo.Context) error {
