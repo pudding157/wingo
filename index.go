@@ -30,6 +30,11 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middlewares.RequestMiddleware)
+	// config := middleware.JWTConfig{
+	// 	TokenLookup: "query:token",
+	// 	SigningKey:  []byte("secret"),
+	// }
+	// e.Use(middleware.JWTWithConfig(config))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},

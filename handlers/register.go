@@ -114,10 +114,20 @@ func (h *Handler) Register(c echo.Context) error {
 		_res.Error_code = "400"
 		return c.JSON(http.StatusBadRequest, _res)
 	}
-	//test dehash
-	// isMatch := utils.DehashStr(_passwordHashed, _str)
 
-	// fmt.Println("isMatch ? => ", isMatch)
+	/*
+			type User_login struct {
+			Token       string `gorm:"primary_key" json:"token"`
+			Id          int    `gorm:"type:autoIncrement" json:"id"`
+			User_id     int    `json:"user_id"`
+			User        User   `gorm:"foreignKey:User_id"`
+			Username    string `gorm:"not null" json:"username"`
+			Ip_address  string `gorm:"not null" json:"ip_address"`
+			Mac_address string `gorm:"not null" json:"mac_address"`
+			User_agent  string `gorm:"not null" json:"user_agent"`
+			Created_at  string `json:"created_at"`
+		}
+	*/
 
 	_res := models.Response{}
 

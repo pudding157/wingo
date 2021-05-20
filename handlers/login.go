@@ -3,7 +3,10 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
+	"winapp/models"
+	"winapp/utils"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
@@ -18,9 +21,7 @@ func LoginHandler(db *gorm.DB) *Handler {
 const secret = "secret"
 
 type jwtCustomClaims struct {
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-	Admin bool   `json:"admin"`
+	User_id string `json:"user_id"`
 	jwt.StandardClaims
 }
 
@@ -28,17 +29,21 @@ func (h *Handler) Login(c echo.Context) error {
 
 	username := c.FormValue("username")
 	password := c.FormValue("password")
+	fmt.Println("username => ", username)
+	fmt.Println("password => ", password)
 
-	if username != "pieter" || password != "claerhout" {
+	User := models.User{}
+
+	h.DB.Where("username = ?", username).Find(&User)
+	fmt.Println("user => ", User)
+	if !utils.DehashStr(User.Password, password) {
 		return echo.ErrUnauthorized
 	}
 
 	claims := &jwtCustomClaims{
-		Name:  "Pieter Claerhout",
-		UUID:  "9E98C454-C7AC-4330-B2EF-983765E00547",
-		Admin: true,
+		User_id: strconv.Itoa(User.Id),
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			ExpiresAt: time.Now().Add((time.Hour * 8760) * 2).Unix(),
 		},
 	}
 
@@ -46,6 +51,7 @@ func (h *Handler) Login(c echo.Context) error {
 
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
+		fmt.Println("err", err)
 		return err
 	}
 
@@ -62,6 +68,6 @@ func restricted(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*jwtCustomClaims)
 	fmt.Println(claims, "claims")
-	name := claims.Name
-	return c.String(http.StatusOK, "Welcome "+name+"!")
+	user_id := claims.User_id
+	return c.String(http.StatusOK, "Welcome "+user_id+"!")
 }
