@@ -27,16 +27,14 @@ type jwtCustomClaims struct {
 
 func (h *Handler) Login(c echo.Context) error {
 
-	username := c.FormValue("username")
-	password := c.FormValue("password")
-	fmt.Println("username => ", username)
-	fmt.Println("password => ", password)
+	Bind_user := &models.User{}
+	c.Bind(&Bind_user)
+	fmt.Println("Bind_user, ", Bind_user)
 
 	User := models.User{}
-
-	h.DB.Where("username = ?", username).Find(&User)
+	h.DB.Where("username = ?", Bind_user.Username).Find(&User)
 	fmt.Println("user => ", User)
-	if !utils.DehashStr(User.Password, password) {
+	if !utils.DehashStr(User.Password, Bind_user.Password) {
 		return echo.ErrUnauthorized
 	}
 
@@ -64,7 +62,7 @@ func accessible(c echo.Context) error {
 	return c.String(http.StatusOK, "Accessible")
 }
 
-func restricted(c echo.Context) error {
+func (h *Handler) restricted(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*jwtCustomClaims)
 	fmt.Println(claims, "claims")

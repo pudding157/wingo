@@ -4,31 +4,44 @@ import (
 	"fmt"
 	"winapp/app"
 
-	"winapp/models"
 	"winapp/utils"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )
 
+type jwtCustomClaims struct {
+	User_id string `json:"user_id"`
+	jwt.StandardClaims
+}
+
 // RequestHandlerMiddleware func (Each *Handler)
-func RequestHandlerMiddleware(config *app.Config) echo.MiddlewareFunc {
+func RequestHandlerMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			pass := false
-			m := new(models.User)
-			if err := c.Bind(m); err != nil {
-				return utils.JSONResponse(c, nil, nil)
-			}
+			// config := middleware.JWTConfig{
+			// 	Claims:     &jwtCustomClaims{},
+			// 	SigningKey: []byte("secret"),
+			// }
+			// var IsLoggedIn = middleware.JWTWithConfig(config)
+			// if IsLoggedIn {
 
-			fmt.Println("m out => ", m)
-			for _, mdb := range config.Db.User {
-				fmt.Println("m => ", m)
-				fmt.Println("mdb => ", mdb)
+			// }
+			// m := new(models.User)
+			// if err := c.Bind(m); err != nil {
+			// 	return utils.JSONResponse(c, nil, nil)
+			// }
 
-				if m.Username == mdb.Username && m.Password == mdb.Password {
-					pass = true
-				}
-			}
+			// fmt.Println("m out => ", m)
+			// for _, mdb := range config.Db.User {
+			// 	fmt.Println("m => ", m)
+			// 	fmt.Println("mdb => ", mdb)
+
+			// 	if m.Username == mdb.Username && m.Password == mdb.Password {
+			// 		pass = true
+			// 	}
+			// }
 			if pass {
 				return next(c)
 			} else {

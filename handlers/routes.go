@@ -6,6 +6,8 @@ import (
 	// "winapp/internal/repositories"
 	// "winapp/internal/services"
 	"winapp/app"
+	"winapp/middlewares"
+
 	// "winapp/middlewares"
 
 	// "github.com/labstack/echo/v4/middleware"
@@ -121,21 +123,13 @@ func register_module(e *echo.Echo, db *gorm.DB, c *app.Config) {
 			HandlerFunc:    LoginHandler.Login,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/dashboard",
+			HandlerFunc:    LoginHandler.Login,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e)},
+		},
 	}
-	// // get all bank
-	// e.GET("/api/v1/bank", func(c echo.Context) error {
-	// 	return c.String(http.StatusOK, "get all bank")
-	// })
-
-	// // send otp
-	// e.POST("/api/v1/register/otp/send", func(c echo.Context) error {
-	// 	return c.String(http.StatusOK, "send otp")
-	// })
-
-	// // post check otp
-	// e.POST("/api/v1/register/otp", func(c echo.Context) error {
-	// 	return c.String(http.StatusOK, "post check otp")
-	// })
 
 	for _, r := range routes {
 		e.Add(r.HTTPMethod, "/api/v1"+r.Endpoint, r.HandlerFunc, r.MiddlewareFunc...)

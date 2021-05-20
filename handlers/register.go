@@ -41,14 +41,14 @@ func RegisterHandler(db *gorm.DB) *Handler {
 
 // otp formvalue struct
 type RegisterFormModel struct {
-	First_name   string
-	Last_name    string
-	Phone_number string
-	Bank_id      int
-	Bank_account string
-	Username     string
-	Password     string
-	Otp          string
+	First_name   string `json:"first_name"`
+	Last_name    string `json:"last_name"`
+	Phone_number string `json:"phone_number"`
+	Bank_id      int    `json:"bank_id"`
+	Bank_account string `json:"bank_account"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	Otp          int    `json:"otp"`
 }
 type ReturnToken struct {
 	Token string `json:"token"`
@@ -59,37 +59,42 @@ func (h *Handler) Register(c echo.Context) error {
 
 	fmt.Println("Register")
 
-	registerFormModel := RegisterFormModel{}
-	registerFormModel.First_name = c.FormValue("first_name")     // get params
-	registerFormModel.Last_name = c.FormValue("last_name")       // get params
-	registerFormModel.Phone_number = c.FormValue("phone_number") // get params
-	_bank_id, err := strconv.Atoi(c.FormValue("bank_id"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	registerFormModel.Bank_id = _bank_id                         // get params
-	registerFormModel.Bank_account = c.FormValue("bank_account") // get params
-	registerFormModel.Username = c.FormValue("username")         // get params
-	registerFormModel.Password = c.FormValue("password")         // get params
-	registerFormModel.Otp = c.FormValue("otp")                   // get params
+	Bind_registerFormModel := &RegisterFormModel{}
+	c.Bind(&Bind_registerFormModel)
 
-	fmt.Println("registerFormModel => ", registerFormModel)
+	fmt.Println("Bind_registerFormModel, ", Bind_registerFormModel)
 
-	_passwordHashed := utils.HashStr(registerFormModel.Password)
+	// registerFormModel := RegisterFormModel{}
+	// registerFormModel.First_name = c.FormValue("first_name")     // get params
+	// registerFormModel.Last_name = c.FormValue("last_name")       // get params
+	// registerFormModel.Phone_number = c.FormValue("phone_number") // get params
+	// _bank_id, err := strconv.Atoi(c.FormValue("bank_id"))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// registerFormModel.Bank_id = _bank_id                         // get params
+	// registerFormModel.Bank_account = c.FormValue("bank_account") // get params
+	// registerFormModel.Username = c.FormValue("username")         // get params
+	// registerFormModel.Password = c.FormValue("password")         // get params
+	// registerFormModel.Otp = c.FormValue("otp")                   // get params
+
+	// fmt.Println("registerFormModel => ", registerFormModel)
+
+	_passwordHashed := utils.HashStr(Bind_registerFormModel.Password)
 
 	fmt.Println("Hash is => ", _passwordHashed)
 
 	User := models.User{}
 
-	User.First_name = registerFormModel.First_name
-	User.Last_name = registerFormModel.Last_name
-	User.Phone_number = registerFormModel.Phone_number
-	User.Username = registerFormModel.Username
+	User.First_name = Bind_registerFormModel.First_name
+	User.Last_name = Bind_registerFormModel.Last_name
+	User.Phone_number = Bind_registerFormModel.Phone_number
+	User.Username = Bind_registerFormModel.Username
 	User.Password = _passwordHashed
 	_now := time.Now().Format(time.RFC3339)
 	User.Created_at = _now
 	User.Updated_at = _now
-	User.Registration_otp = registerFormModel.Otp
+	User.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
 
 	if err := h.DB.Save(&User).Error; err != nil {
 		log.Print("err => ", err)
@@ -101,8 +106,8 @@ func (h *Handler) Register(c echo.Context) error {
 	}
 
 	User_bank := models.User_bank{}
-	User_bank.Bank_id = _bank_id
-	User_bank.Bank_account = registerFormModel.Bank_account
+	User_bank.Bank_id = Bind_registerFormModel.Bank_id
+	User_bank.Bank_account = Bind_registerFormModel.Bank_account
 	User_bank.User_id = User.Id
 	User_bank.Created_at = _now
 
