@@ -48,7 +48,7 @@ type BankModel struct {
 }
 
 // otp/send action form
-func (h Handler) Get_all_bank(c echo.Context) error {
+func (h *Handler) Get_all_bank(c echo.Context) error {
 
 	fmt.Println("Get all bank")
 

@@ -13,8 +13,8 @@ const (
 )
 
 var enumStrings = []string{
-	"PHONE_NUMBER",
-	"EMAIL",
+	"phone-number",
+	"email",
 }
 
 func EnumFromKey(key string) (*Enum, error) {
