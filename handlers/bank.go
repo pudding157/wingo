@@ -6,13 +6,14 @@ import (
 
 	"net/http"
 
+	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func BankHandler(db *gorm.DB) *Handler {
+func BankHandler(db *gorm.DB, r *redis.Client) *Handler {
 
 	Bank := []models.Bank{
 		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
@@ -39,7 +40,7 @@ func BankHandler(db *gorm.DB) *Handler {
 	} else {
 		fmt.Println("has table")
 	}
-	return &Handler{DB: db}
+	return &Handler{DB: db, R: r}
 }
 
 type BankModel struct {

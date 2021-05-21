@@ -79,9 +79,9 @@ func NewRouter(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) error 
 
 func register_module(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) {
 
-	RegisterHandler := RegisterHandler(db)
-	BankHandler := BankHandler(db)
-	LoginHandler := LoginHandler(db)
+	RegisterHandler := RegisterHandler(db, r)
+	BankHandler := BankHandler(db, r)
+	LoginHandler := LoginHandler(db, r)
 
 	routes := []route{
 		{

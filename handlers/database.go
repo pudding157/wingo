@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -10,6 +11,7 @@ import (
 // Handler struct
 type Handler struct {
 	DB *gorm.DB
+	R  *redis.Client
 	// mService services.MerchantService
 	// pService services.ProductService
 	// rService services.ReportService

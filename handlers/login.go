@@ -10,11 +10,12 @@ import (
 	"winapp/utils"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
-func LoginHandler(db *gorm.DB) *Handler {
+func LoginHandler(db *gorm.DB, r *redis.Client) *Handler {
 
 	User_login := models.User_login{}
 	if !db.HasTable(User_login) {
@@ -22,7 +23,7 @@ func LoginHandler(db *gorm.DB) *Handler {
 		db.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User_bank")
 	}
-	return &Handler{DB: db}
+	return &Handler{DB: db, R: r}
 }
 
 type jwtCustomClaims struct {
@@ -85,15 +86,14 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, _res)
 	}
 	fmt.Println("1111111111111")
-	r := RedisHandler{}
-	r.Initialize()
+	r := h.R
 	rt := time.Unix(time.Now().Add((time.Hour*8760)*2).Unix(), 0)
 
 	redisValue := redisValue{}
 	redisValue.User_id = User.Id
-	redisValue.Expire_date = time.Now().Add(time.Second).Format(time.RFC3339)
+	redisValue.Expire_date = time.Now().Add(time.Hour * 2).Format(time.RFC3339)
 	rv, _ := json.Marshal(redisValue)
-	errAccess := r.DB.Set(t, string(rv), rt.Sub(time.Now())).Err()
+	errAccess := r.Set(t, string(rv), rt.Sub(time.Now())).Err()
 	fmt.Println("222222222222222222", redisValue)
 	if errAccess != nil {
 		fmt.Println("2333333333333333333 ", errAccess)

@@ -11,11 +11,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
-func RegisterHandler(db *gorm.DB) *Handler {
+func RegisterHandler(db *gorm.DB, r *redis.Client) *Handler {
 	Otp_history := []models.Otp_history{}
 	if !db.HasTable(Otp_history) {
 		fmt.Println("No table")
@@ -36,7 +37,7 @@ func RegisterHandler(db *gorm.DB) *Handler {
 		fmt.Println("migrate data User_bank")
 	}
 
-	return &Handler{DB: db}
+	return &Handler{DB: db, R: r}
 }
 
 // otp formvalue struct
