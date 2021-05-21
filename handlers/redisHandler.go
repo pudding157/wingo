@@ -1,9 +1,11 @@
-package handlers //เปรียบเสมือน namespace c#
+package handlers
 
 import (
-	"log"
 
 	// "net/http"
+	"fmt"
+	"log"
+
 	"github.com/go-redis/redis"
 )
 
@@ -22,7 +24,7 @@ func (h *RedisHandler) Initialize() {
 
 	pong, err := client.Ping().Result()
 
-	log.Printf(pong, err)
+	fmt.Println("pass ? => ?", pong, err)
 	h.DB = client
 
 }

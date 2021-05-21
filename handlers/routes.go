@@ -9,10 +9,9 @@ import (
 	"winapp/middlewares"
 
 	// "winapp/middlewares"
-
-	// "github.com/labstack/echo/v4/middleware"
 	"net/http"
 
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
@@ -25,8 +24,8 @@ type route struct {
 }
 
 // NewRouter func
-func NewRouter(e *echo.Echo, db *gorm.DB, c *app.Config) error {
-	register_module(e, db, c)
+func NewRouter(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) error {
+	register_module(e, db, r, c)
 	// merchantRepo := repositories.NewMerchantRepo(c)
 	// merchantService := services.NewMerchantService(merchantRepo)
 	// productRepo := repositories.NewProductRepo(c)
@@ -78,7 +77,7 @@ func NewRouter(e *echo.Echo, db *gorm.DB, c *app.Config) error {
 	return nil
 }
 
-func register_module(e *echo.Echo, db *gorm.DB, c *app.Config) {
+func register_module(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) {
 
 	RegisterHandler := RegisterHandler(db)
 	BankHandler := BankHandler(db)
@@ -125,9 +124,9 @@ func register_module(e *echo.Echo, db *gorm.DB, c *app.Config) {
 		},
 		{
 			HTTPMethod:     http.MethodGet,
-			Endpoint:       "/dashboard",
-			HandlerFunc:    LoginHandler.Login,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e)},
+			Endpoint:       "/:userid",
+			HandlerFunc:    LoginHandler.restricted,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e, r)},
 		},
 	}
 
