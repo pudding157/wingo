@@ -9,6 +9,7 @@ services:
       - mysql
     depends_on:
       - db
+      - redis
     links:
       - db
   db:
@@ -20,7 +21,14 @@ services:
       # - ./init.sql:/data/application/init.sql #add after run first
       - ./db:/var/lib/mysql
     networks:
+      - mysql  
+  redis:
+    hostname: redis
+    image: redis    
+    networks:
       - mysql
+    # ports:
+    #   - 6379:6379
 networks:
   mysql:
     driver: bridge
