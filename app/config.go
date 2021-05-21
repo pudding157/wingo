@@ -56,6 +56,7 @@ func (c *Config) binding() error {
 	return nil
 }
 func connectDatabase() *gorm.DB {
+	//db:3306
 	db, err := gorm.Open("mysql", "root:helloworld@tcp(localhost:6603)/godb?charset=utf8&parseTime=True") //127.0.0.1:3306
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +65,7 @@ func connectDatabase() *gorm.DB {
 }
 func connectRedis() *redis.Client {
 	log.Printf("hello redis")
-
+	//rediss
 	client := redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1:6379",
 		Password: "",
