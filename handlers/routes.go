@@ -11,8 +11,6 @@ import (
 	// "winapp/middlewares"
 	"net/http"
 
-	"github.com/go-redis/redis"
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,64 +22,16 @@ type route struct {
 }
 
 // NewRouter func
-func NewRouter(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) error {
-	register_module(e, db, r, c)
-	// merchantRepo := repositories.NewMerchantRepo(c)
-	// merchantService := services.NewMerchantService(merchantRepo)
-	// productRepo := repositories.NewProductRepo(c)
-	// productService := services.NewProductService(productRepo)
-	// reportService := services.NewReportService()
-	// merchantHandler := NewMerchantHandler(merchantService, productService, reportService)
-	// routes := []route{
-	// 	{
-	// 		HTTPMethod:     http.MethodGet,
-	// 		Endpoint:       "/merchant/information/:id",
-	// 		HandlerFunc:    merchantHandler.GetMerchantByID,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c)},
-	// 	},
-	// 	{
-	// 		HTTPMethod:     http.MethodPost,
-	// 		Endpoint:       "/merchant/register",
-	// 		HandlerFunc:    merchantHandler.Register,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{},
-	// 	},
-	// 	{
-	// 		HTTPMethod:     http.MethodPost,
-	// 		Endpoint:       "/merchant/update",
-	// 		HandlerFunc:    merchantHandler.Update,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c)},
-	// 	},
-	// 	{
-	// 		HTTPMethod:     http.MethodPost,
-	// 		Endpoint:       "/merchant/:id/product",
-	// 		HandlerFunc:    merchantHandler.CreateProduct,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c)},
-	// 	},
-	// 	{
-	// 		HTTPMethod:     http.MethodGet,
-	// 		Endpoint:       "/merchant/:id/products",
-	// 		HandlerFunc:    merchantHandler.GetProducts,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c)},
-	// 	},
-	// 	{
-	// 		HTTPMethod:     http.MethodGet,
-	// 		Endpoint:       "/merchant/:id/report",
-	// 		HandlerFunc:    merchantHandler.GenReport,
-	// 		MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c)},
-	// 	},
-	// }
-
-	// for _, r := range routes {
-	// 	e.Add(r.HTTPMethod, "/api"+r.Endpoint, r.HandlerFunc, r.MiddlewareFunc...)
-	// }
+func NewRouter(e *echo.Echo, c *app.Config) error {
+	register_module(e, c)
 	return nil
 }
 
-func register_module(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) {
+func register_module(e *echo.Echo, c *app.Config) {
 
-	RegisterHandler := RegisterHandler(db, r)
-	BankHandler := BankHandler(db, r)
-	LoginHandler := LoginHandler(db, r)
+	RegisterHandler := RegisterHandler(c)
+	BankHandler := BankHandler(c)
+	LoginHandler := LoginHandler(c)
 
 	routes := []route{
 		{
@@ -126,7 +76,7 @@ func register_module(e *echo.Echo, db *gorm.DB, r *redis.Client, c *app.Config) 
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/:userid",
 			HandlerFunc:    LoginHandler.restricted,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e, r)},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e)},
 		},
 	}
 

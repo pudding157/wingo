@@ -6,24 +6,23 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"winapp/app"
 	"winapp/models"
 	"winapp/utils"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/go-redis/redis"
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
-func LoginHandler(db *gorm.DB, r *redis.Client) *Handler {
+func LoginHandler(c *app.Config) *Handler {
 
 	User_login := models.User_login{}
-	if !db.HasTable(User_login) {
+	if !c.DB.HasTable(User_login) {
 		fmt.Println("No table")
-		db.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User_bank")
 	}
-	return &Handler{DB: db, R: r}
+	return &Handler{DB: c.DB, R: c.R}
 }
 
 type jwtCustomClaims struct {

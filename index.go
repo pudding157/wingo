@@ -22,12 +22,7 @@ func main() {
 	}
 	e := echo.New()
 
-	db := handlers.Initialize().DB
-	redis := handlers.RedisHandler{}
-	redis.Initialize()
-	redisDb := redis.DB
-
-	if err := handlers.NewRouter(e, db, redisDb, c); err != nil {
+	if err := handlers.NewRouter(e, c); err != nil {
 		fmt.Println("New Router Failed.")
 	}
 

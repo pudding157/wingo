@@ -23,12 +23,11 @@ services:
     networks:
       - mysql  
   redis:
-    hostname: redis
     image: redis    
     networks:
       - mysql
-    # ports:
-    #   - 6379:6379
+    ports:
+      - 6379:6379
 networks:
   mysql:
     driver: bridge

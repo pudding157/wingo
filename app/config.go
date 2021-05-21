@@ -1,8 +1,11 @@
 package app
 
 import (
-	"winapp/models"
+	"fmt"
+	"log"
 
+	"github.com/go-redis/redis"
+	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 )
 
@@ -10,15 +13,16 @@ import (
 type Config struct {
 	Env string `mapstructure:"env"`
 	vp  *viper.Viper
-	Db  *Database
+	DB  *gorm.DB
+	R   *redis.Client
 }
 
 // Database struct
-type Database struct {
-	Bank        models.Bank
-	User        []models.User
-	Otp_history models.Otp_history
-}
+// type Database struct {
+// 	Bank        models.Bank
+// 	User        []models.User
+// 	Otp_history models.Otp_history
+// }
 
 // NewConfig func
 func NewConfig(env string) *Config {
@@ -31,14 +35,17 @@ func (c *Config) Init() error {
 	// vp.AddConfigPath("./config")
 	// vp.SetConfigName(c.Env)
 	// c.vp = vp
-
-	c.Db = &Database{}
 	// if err := vp.ReadInConfig(); err != nil {
 	// 	return err
 	// }
+
+	c.DB = connectDatabase()
+	c.R = connectRedis()
 	// if err := c.binding(); err != nil {
+	// 	fmt.Println("binding err : => ", err)
 	// 	return err
 	// }
+
 	return nil
 }
 
@@ -47,4 +54,29 @@ func (c *Config) binding() error {
 		return err
 	}
 	return nil
+}
+func connectDatabase() *gorm.DB {
+	db, err := gorm.Open("mysql", "root:helloworld@tcp(localhost:6603)/godb?charset=utf8&parseTime=True") //127.0.0.1:3306
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
+}
+func connectRedis() *redis.Client {
+	log.Printf("hello redis")
+
+	client := redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	pong, err := client.Ping().Result()
+
+	if err != nil {
+		log.Fatal("redis error => ", err)
+	}
+	fmt.Println("pass ? => ?", pong, err)
+
+	return client
 }

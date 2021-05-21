@@ -2,18 +2,17 @@ package handlers
 
 import (
 	"fmt"
+	"winapp/app"
 	"winapp/models"
 
 	"net/http"
 
-	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func BankHandler(db *gorm.DB, r *redis.Client) *Handler {
+func BankHandler(c *app.Config) *Handler {
 
 	Bank := []models.Bank{
 		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
@@ -30,17 +29,17 @@ func BankHandler(db *gorm.DB, r *redis.Client) *Handler {
 		{Id: 12, Name: "ธนาคารธนชาต จำกัด (มหาชน)", Is_active: true},
 		{Id: 13, Name: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (มหาชน)", Is_active: true},
 	}
-	if !db.HasTable(Bank) {
+	if !c.DB.HasTable(Bank) {
 		fmt.Println("No table")
-		db.AutoMigrate(&Bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&Bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		for _, _bank := range Bank {
-			db.Create(_bank)
+			c.DB.Create(_bank)
 		}
 		fmt.Println("migrate data bank and create bank")
 	} else {
 		fmt.Println("has table")
 	}
-	return &Handler{DB: db, R: r}
+	return &Handler{DB: c.DB, R: c.R}
 }
 
 type BankModel struct {

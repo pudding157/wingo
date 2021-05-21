@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"winapp/app"
 	"winapp/enums"
 	"winapp/models"
 	"winapp/utils"
@@ -11,33 +12,31 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-redis/redis"
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
-func RegisterHandler(db *gorm.DB, r *redis.Client) *Handler {
+func RegisterHandler(c *app.Config) *Handler {
 	Otp_history := []models.Otp_history{}
-	if !db.HasTable(Otp_history) {
+	if !c.DB.HasTable(Otp_history) {
 		fmt.Println("No table")
-		db.AutoMigrate(&Otp_history) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&Otp_history) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data Otp_history")
 	}
 	User := []models.User{}
-	if !db.HasTable(User) {
+	if !c.DB.HasTable(User) {
 		fmt.Println("No table")
-		db.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User")
 	}
 
 	User_bank := models.User_bank{}
-	if !db.HasTable(User_bank) {
+	if !c.DB.HasTable(User_bank) {
 		fmt.Println("No table")
-		db.AutoMigrate(&User_bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&User_bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User_bank")
 	}
 
-	return &Handler{DB: db, R: r}
+	return &Handler{DB: c.DB, R: c.R}
 }
 
 // otp formvalue struct
