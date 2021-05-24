@@ -32,7 +32,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 	RegisterHandler := RegisterHandler(c)
 	BankHandler := BankHandler(c)
 	LoginHandler := LoginHandler(c)
-
+	UserHandler := UserHandler{c}
 	routes := []route{
 		{
 			HTTPMethod: http.MethodGet,
@@ -75,7 +75,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/:userid",
-			HandlerFunc:    LoginHandler.restricted,
+			HandlerFunc:    UserHandler.Get_Profile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e)},
 		},
 	}

@@ -141,7 +141,7 @@ func (h *Handler) Register(c echo.Context) error {
 
 	_res := models.Response{}
 
-	_res.Data = ReturnToken{Token: "asd"}
+	_res.Data = ReturnToken{Token: "asd"} // will change
 
 	return c.JSON(http.StatusOK, _res)
 }

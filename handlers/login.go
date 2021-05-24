@@ -114,12 +114,3 @@ func (h *Handler) Login(c echo.Context) error {
 		"token": t,
 	})
 }
-
-func (h *Handler) restricted(c echo.Context) error {
-	userid := c.Param("userid")
-	fmt.Println("userid :", userid)
-	User := models.User{}
-	h.DB.Where("id = ?", userid).Find(&User)
-	j, _ := json.Marshal(User)
-	return c.String(http.StatusOK, string(j))
-}
