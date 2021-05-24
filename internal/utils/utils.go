@@ -4,10 +4,9 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"winapp/internal/models"
 
 	"github.com/labstack/echo/v4"
-
-	"winapp/models"
 )
 
 // JSONResponse func

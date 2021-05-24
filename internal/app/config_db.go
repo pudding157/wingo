@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	"winapp/models"
+	"winapp/internal/models"
 
 	"github.com/jinzhu/gorm"
 	// "github.com/spf13/viper"

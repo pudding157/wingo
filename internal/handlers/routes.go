@@ -1,15 +1,16 @@
 package handlers
 
 import (
-	// "winapp/internal/app"
-	// "winapp/internal/middlewares"
-	// "winapp/internal/repositories"
-	// "winapp/internal/services"
-	"winapp/app"
-	"winapp/middlewares"
+	// "winapp/internalinternal/app"
+	// "winapp/internalinternal/middlewares"
+	// "winapp/internalinternal/repositories"
+	// "winapp/internalinternal/services"
 
-	// "winapp/middlewares"
+	// "winapp/internalmiddlewares"
 	"net/http"
+	"winapp/internal/app"
+	"winapp/internal/middlewares"
+	"winapp/internal/repositories"
 
 	"github.com/labstack/echo/v4"
 )
@@ -29,8 +30,10 @@ func NewRouter(e *echo.Echo, c *app.Config) error {
 
 func register_module(e *echo.Echo, c *app.Config) {
 
+	BankRepo := repositories.NewBankRepo(c)
+	BankHandler := NewBankHandler(BankRepo)
+
 	RegisterHandler := RegisterHandler{c}
-	BankHandler := BankHandler{c}
 	LoginHandler := LoginHandler{c}
 	UserHandler := UserHandler{c}
 	routes := []route{
@@ -63,7 +66,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/bank",
-			HandlerFunc:    BankHandler.Get_all_bank,
+			HandlerFunc:    BankHandler.GetBanks,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
 		{
@@ -76,7 +79,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/:userid",
 			HandlerFunc:    UserHandler.Get_Profile,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.RequestHandlerMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 	}
 

@@ -3,16 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	"winapp/app"
-	"winapp/handlers"
-	"winapp/middlewares"
+	"winapp/internal/app"
+	"winapp/internal/handlers"
+	"winapp/internal/middlewares"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-//handler "winapp/handler" //คล้าย namespace c#  ใส่ชื่อapp ดูจาก go.mod ได้หากลืม ช่อง module แล้วใส่ / ชื่อ package
+//handler "winapp/internalhandler" //คล้าย namespace c#  ใส่ชื่อapp ดูจาก go.mod ได้หากลืม ช่อง module แล้วใส่ / ชื่อ package
 func main() {
 	env := flag.String("env", "dev", "environment")
 	flag.Parse()

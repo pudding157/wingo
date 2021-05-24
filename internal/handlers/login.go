@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"winapp/app"
-	"winapp/models"
-	"winapp/utils"
+	"winapp/internal/app"
+	"winapp/internal/models"
+	"winapp/internal/utils"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"

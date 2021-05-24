@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"winapp/app"
-	"winapp/enums"
-	"winapp/models"
-	"winapp/utils"
+	"winapp/internal/app"
+	"winapp/internal/models"
+	"winapp/internal/utils"
 
 	"net/http"
 	"strconv"
@@ -170,7 +169,7 @@ func (h *RegisterHandler) Otp_send(c echo.Context) error {
 	_res.Data = otp_res
 
 	history := models.Otp_history{}
-	history.Type = enums.PHONE_NUMBER.Index()
+	history.Type = utils.PHONE_NUMBER.Index()
 	history.Send_to = phone_number
 	history.Otp = otp
 	history.Created_at = time.Now().Format(time.RFC3339)
@@ -212,7 +211,7 @@ func (h *RegisterHandler) Otp(c echo.Context) error {
 	otpModel.Otp = _otp                           // get params
 	otpModel.Recipient = c.FormValue("recipient") // get params
 	otpModel.Type = c.FormValue("type")           // get params
-	keyType, _err := enums.EnumFromKey(otpModel.Type)
+	keyType, _err := utils.EnumFromKey(otpModel.Type)
 	if _err != nil {
 		log.Fatal(_err)
 	}

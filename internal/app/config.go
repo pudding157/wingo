@@ -34,17 +34,17 @@ func (c *Config) Init() error {
 	// vp := viper.New()
 	// vp.AddConfigPath("./config")
 	// vp.SetConfigName(c.Env)
-	// c.vp = vp
+	// // c.vp = vp
 	// if err := vp.ReadInConfig(); err != nil {
 	// 	return err
 	// }
 
 	c.DB = connectDatabase()
 	c.R = connectRedis()
-	// if err := c.binding(); err != nil {
-	// 	fmt.Println("binding err : => ", err)
-	// 	return err
-	// }
+	if err := c.binding(); err != nil {
+		fmt.Println("binding err : => ", err)
+		return err
+	}
 
 	Config_db := Config_db{c.DB}
 	Config_db.Init()
