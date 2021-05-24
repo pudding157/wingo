@@ -20,7 +20,7 @@ func LoginHandler(c *app.Config) *Handler {
 	if !c.DB.HasTable(User_login) {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		fmt.Println("migrate data User_bank")
+		fmt.Println("migrate data User_login")
 	}
 	return &Handler{DB: c.DB, R: c.R}
 }

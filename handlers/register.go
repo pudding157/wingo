@@ -34,6 +34,9 @@ func RegisterHandler(c *app.Config) *Handler {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&User_bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User_bank")
+	} else {
+		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
+		c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
 	}
 
 	return &Handler{DB: c.DB, R: c.R}
@@ -101,6 +104,7 @@ func (h *Handler) Register(c echo.Context) error {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_message = err
 		_res.Error_code = "400"
 		return c.JSON(http.StatusBadRequest, _res)
 	}
@@ -116,6 +120,7 @@ func (h *Handler) Register(c echo.Context) error {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_message = err
 		_res.Error_code = "400"
 		return c.JSON(http.StatusBadRequest, _res)
 	}
@@ -219,7 +224,7 @@ func (h *Handler) Otp(c echo.Context) error {
 	fmt.Println("model => ", history)
 
 	_res := models.Response{}
-	otp_res := ReturnOtp{}
+	otp_res := ReturnOtp{Success: true, Otp: otpModel.Otp}
 	otp_res.Success = true
 	_res.Data = otp_res // or false
 
