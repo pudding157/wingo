@@ -14,16 +14,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func LoginHandler(c *app.Config) *Handler {
-
-	User_login := models.User_login{}
-	if !c.DB.HasTable(User_login) {
-		fmt.Println("No table")
-		c.DB.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		fmt.Println("migrate data User_login")
-	}
-	return &Handler{DB: c.DB, R: c.R}
+type LoginHandler struct {
+	// DB *gorm.DB
+	// R  *redis.Client
+	c *app.Config
 }
+
+// func LoginHandler(c *app.Config) *Handler {
+
+// 	User_login := models.User_login{}
+// 	if !c.DB.HasTable(User_login) {
+// 		fmt.Println("No table")
+// 		c.DB.AutoMigrate(&User_login) // สร้าง table, field ต่างๆที่ไม่เคยมี
+// 		fmt.Println("migrate data User_login")
+// 	}
+// 	return &Handler{DB: c.DB, R: c.R}
+// }
 
 type jwtCustomClaims struct {
 	User_id string `json:"user_id"`
@@ -35,14 +41,14 @@ type redisValue struct {
 	Expire_date string `json:"expire_date"`
 }
 
-func (h *Handler) Login(c echo.Context) error {
+func (h *LoginHandler) Login(c echo.Context) error {
 
 	Bind_user := &models.User{}
 	c.Bind(&Bind_user)
 	fmt.Println("Bind_user, ", Bind_user)
 
 	User := models.User{}
-	h.DB.Where("username = ?", Bind_user.Username).Find(&User)
+	h.c.DB.Where("username = ?", Bind_user.Username).Find(&User)
 	fmt.Println("user => ", User)
 	if !utils.DehashStr(User.Password, Bind_user.Password) {
 		return echo.ErrUnauthorized
@@ -76,7 +82,7 @@ func (h *Handler) Login(c echo.Context) error {
 	_now := time.Now().Format(time.RFC3339)
 	User_login.Created_at = _now
 	User_login.Token = t
-	if err := h.DB.Save(&User_login).Error; err != nil {
+	if err := h.c.DB.Save(&User_login).Error; err != nil {
 		fmt.Println("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -85,7 +91,7 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, _res)
 	}
 	fmt.Println("1111111111111")
-	r := h.R
+	r := h.c.R
 	rt := time.Unix(time.Now().Add((time.Hour*8760)*2).Unix(), 0)
 
 	redisValue := redisValue{}
@@ -98,17 +104,6 @@ func (h *Handler) Login(c echo.Context) error {
 		fmt.Println("2333333333333333333 ", errAccess)
 		return errAccess
 	}
-	// 	type User_login struct {
-	// 	Token       string `gorm:"primary_key" json:"token"`
-	// 	Id          int    `gorm:"type:autoIncrement" json:"id"`
-	// 	User_id     int    `json:"user_id"`
-	// 	User        User   `gorm:"foreignKey:User_id"`
-	// 	Username    string `gorm:"not null" json:"username"`
-	// 	Ip_address  string `gorm:"not null" json:"ip_address"`
-	// 	Mac_address string `gorm:"not null" json:"mac_address"`
-	// 	User_agent  string `gorm:"not null" json:"user_agent"`
-	// 	Created_at  string `json:"created_at"`
-	// }
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": t,

@@ -12,35 +12,41 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func BankHandler(c *app.Config) *Handler {
-
-	Bank := []models.Bank{
-		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 2, Name: "ธนาคารไทยพาณิชย์ จำกัด (มหาชน)", Is_active: true},
-		{Id: 3, Name: "ธนาคารกรุงเทพ จำกัด (มหาชน)", Is_active: true},
-		{Id: 4, Name: "ธนาคารกรุงศรีอยุธยา จำกัด (มหาชน)", Is_active: true},
-		{Id: 5, Name: "ธนาคารกรุงไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 6, Name: "ธนาคารนครหลวงไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 7, Name: "ธนาคารทหารไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 8, Name: "ธนาคารยูโอบี จำกัด (มหาชน)", Is_active: true},
-		{Id: 9, Name: "ธนาคารออมสิน", Is_active: true},
-		{Id: 10, Name: "ธนาคารอาคารสงเคราะห์", Is_active: true},
-		{Id: 11, Name: "ธนาคารซีไอเอ็มบีไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 12, Name: "ธนาคารธนชาต จำกัด (มหาชน)", Is_active: true},
-		{Id: 13, Name: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (มหาชน)", Is_active: true},
-	}
-	if !c.DB.HasTable(Bank) {
-		fmt.Println("No table")
-		c.DB.AutoMigrate(&Bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		for _, _bank := range Bank {
-			c.DB.Create(_bank)
-		}
-		fmt.Println("migrate data bank and create bank")
-	} else {
-		fmt.Println("has table")
-	}
-	return &Handler{DB: c.DB, R: c.R}
+type BankHandler struct {
+	// DB *gorm.DB
+	// R  *redis.Client
+	c *app.Config
 }
+
+// func BankHandler(c *app.Config) *Handler {
+
+// 	Bank := []models.Bank{
+// 		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 2, Name: "ธนาคารไทยพาณิชย์ จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 3, Name: "ธนาคารกรุงเทพ จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 4, Name: "ธนาคารกรุงศรีอยุธยา จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 5, Name: "ธนาคารกรุงไทย จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 6, Name: "ธนาคารนครหลวงไทย จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 7, Name: "ธนาคารทหารไทย จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 8, Name: "ธนาคารยูโอบี จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 9, Name: "ธนาคารออมสิน", Is_active: true},
+// 		{Id: 10, Name: "ธนาคารอาคารสงเคราะห์", Is_active: true},
+// 		{Id: 11, Name: "ธนาคารซีไอเอ็มบีไทย จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 12, Name: "ธนาคารธนชาต จำกัด (มหาชน)", Is_active: true},
+// 		{Id: 13, Name: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (มหาชน)", Is_active: true},
+// 	}
+// 	if !c.DB.HasTable(Bank) {
+// 		fmt.Println("No table")
+// 		c.DB.AutoMigrate(&Bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
+// 		for _, _bank := range Bank {
+// 			c.DB.Create(_bank)
+// 		}
+// 		fmt.Println("migrate data bank and create bank")
+// 	} else {
+// 		fmt.Println("has table")
+// 	}
+// 	return &Handler{DB: c.DB, R: c.R}
+// }
 
 type BankModel struct {
 	Id   int    `json:"id"`
@@ -48,14 +54,14 @@ type BankModel struct {
 }
 
 // otp/send action form
-func (h *Handler) Get_all_bank(c echo.Context) error {
+func (h *BankHandler) Get_all_bank(c echo.Context) error {
 
 	fmt.Println("Get all bank")
 
 	banks := []models.Bank{}
 	bankModel := []BankModel{}
 
-	if err := h.DB.Find(&banks).Error; err != nil {
+	if err := h.c.DB.Find(&banks).Error; err != nil {
 		fmt.Println("h.DB.Find(&banks) => ", err)
 		return c.JSON(http.StatusBadRequest, err)
 	}

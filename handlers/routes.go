@@ -29,9 +29,9 @@ func NewRouter(e *echo.Echo, c *app.Config) error {
 
 func register_module(e *echo.Echo, c *app.Config) {
 
-	RegisterHandler := RegisterHandler(c)
-	BankHandler := BankHandler(c)
-	LoginHandler := LoginHandler(c)
+	RegisterHandler := RegisterHandler{c}
+	BankHandler := BankHandler{c}
+	LoginHandler := LoginHandler{c}
 	UserHandler := UserHandler{c}
 	routes := []route{
 		{

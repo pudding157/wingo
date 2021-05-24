@@ -15,32 +15,38 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func RegisterHandler(c *app.Config) *Handler {
-	Otp_history := []models.Otp_history{}
-	if !c.DB.HasTable(Otp_history) {
-		fmt.Println("No table")
-		c.DB.AutoMigrate(&Otp_history) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		fmt.Println("migrate data Otp_history")
-	}
-	User := []models.User{}
-	if !c.DB.HasTable(User) {
-		fmt.Println("No table")
-		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		fmt.Println("migrate data User")
-	}
-
-	User_bank := models.User_bank{}
-	if !c.DB.HasTable(User_bank) {
-		fmt.Println("No table")
-		c.DB.AutoMigrate(&User_bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		fmt.Println("migrate data User_bank")
-	} else {
-		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
-		c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
-	}
-
-	return &Handler{DB: c.DB, R: c.R}
+type RegisterHandler struct {
+	// DB *gorm.DB
+	// R  *redis.Client
+	c *app.Config
 }
+
+// func RegisterHandler(c *app.Config) *Handler {
+// 	Otp_history := []models.Otp_history{}
+// 	if !c.DB.HasTable(Otp_history) {
+// 		fmt.Println("No table")
+// 		c.DB.AutoMigrate(&Otp_history) // สร้าง table, field ต่างๆที่ไม่เคยมี
+// 		fmt.Println("migrate data Otp_history")
+// 	}
+// 	User := []models.User{}
+// 	if !c.DB.HasTable(User) {
+// 		fmt.Println("No table")
+// 		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
+// 		fmt.Println("migrate data User")
+// 	}
+
+// 	User_bank := models.User_bank{}
+// 	if !c.DB.HasTable(User_bank) {
+// 		fmt.Println("No table")
+// 		c.DB.AutoMigrate(&User_bank) // สร้าง table, field ต่างๆที่ไม่เคยมี
+// 		fmt.Println("migrate data User_bank")
+// 	} else {
+// 		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
+// 		c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
+// 	}
+
+// 	return &Handler{DB: c.DB, R: c.R}
+// }
 
 // otp formvalue struct
 type RegisterFormModel struct {
@@ -58,7 +64,7 @@ type ReturnToken struct {
 }
 
 // register action form
-func (h *Handler) Register(c echo.Context) error {
+func (h *RegisterHandler) Register(c echo.Context) error {
 
 	fmt.Println("Register")
 
@@ -99,7 +105,7 @@ func (h *Handler) Register(c echo.Context) error {
 	User.Updated_at = _now
 	User.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
 
-	if err := h.DB.Save(&User).Error; err != nil {
+	if err := h.c.DB.Save(&User).Error; err != nil {
 		log.Print("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -115,7 +121,7 @@ func (h *Handler) Register(c echo.Context) error {
 	User_bank.User_id = User.Id
 	User_bank.Created_at = _now
 
-	if err := h.DB.Save(&User_bank).Error; err != nil {
+	if err := h.c.DB.Save(&User_bank).Error; err != nil {
 		log.Print("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -147,7 +153,7 @@ func (h *Handler) Register(c echo.Context) error {
 }
 
 // otp/send action form
-func (h *Handler) Otp_send(c echo.Context) error {
+func (h *RegisterHandler) Otp_send(c echo.Context) error {
 
 	fmt.Println("Otp send")
 
@@ -170,7 +176,7 @@ func (h *Handler) Otp_send(c echo.Context) error {
 	history.Created_at = time.Now().Format(time.RFC3339)
 	fmt.Println("history => ", history)
 
-	if err := h.DB.Save(&history).Error; err != nil {
+	if err := h.c.DB.Save(&history).Error; err != nil {
 		log.Print("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -197,7 +203,7 @@ type ReturnOtp struct {
 }
 
 // otp action form
-func (h *Handler) Otp(c echo.Context) error {
+func (h *RegisterHandler) Otp(c echo.Context) error {
 
 	fmt.Println("Otp")
 	otpModel := OtpModel{}
@@ -211,7 +217,7 @@ func (h *Handler) Otp(c echo.Context) error {
 		log.Fatal(_err)
 	}
 	history := models.Otp_history{}
-	h.DB.Where("otp = ? AND type = ? AND send_to = ?", otpModel.Otp, keyType.Index(), otpModel.Recipient).Find(&history)
+	h.c.DB.Where("otp = ? AND type = ? AND send_to = ?", otpModel.Otp, keyType.Index(), otpModel.Recipient).Find(&history)
 
 	if history.Id == 0 {
 		_res := models.ErrorResponse{}

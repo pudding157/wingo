@@ -6,15 +6,15 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 )
 
 // Config struct
 type Config struct {
 	Env string `mapstructure:"env"`
-	vp  *viper.Viper
-	DB  *gorm.DB
-	R   *redis.Client
+	// vp  *viper.Viper
+	DB *gorm.DB
+	R  *redis.Client
 }
 
 // Database struct
@@ -46,13 +46,16 @@ func (c *Config) Init() error {
 	// 	return err
 	// }
 
+	Config_db := Config_db{c.DB}
+	Config_db.Init()
+
 	return nil
 }
 
 func (c *Config) binding() error {
-	if err := c.vp.Unmarshal(&c); err != nil {
-		return err
-	}
+	// if err := c.vp.Unmarshal(&c); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 func connectDatabase() *gorm.DB {
