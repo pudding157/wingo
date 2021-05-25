@@ -36,9 +36,12 @@ func register_module(e *echo.Echo, c *app.Config) {
 	LoginRepo := repositories.NewLoginRepo(c)
 	LoginHandler := NewLoginHandler(LoginRepo)
 
+	UserRepo := repositories.NewUserRepo(c)
+	UserHandler := NewUserHandler(UserRepo)
+
 	RegisterHandler := RegisterHandler{c}
 	// LoginHandler := LoginHandler{c}
-	UserHandler := UserHandler{c}
+	// UserHandler := UserHandler{c}
 	routes := []route{
 		{
 			HTTPMethod: http.MethodGet,
