@@ -7,15 +7,8 @@ import (
 	"winapp/internal/app"
 	"winapp/internal/utils"
 
-	"github.com/dgrijalva/jwt-go"
-
 	"github.com/labstack/echo/v4"
 )
-
-type JWTCustomClaims struct {
-	UserID string `json:"user_id"`
-	jwt.StandardClaims
-}
 
 //
 type UserSession struct {

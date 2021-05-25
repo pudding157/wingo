@@ -6,15 +6,15 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 )
 
 // Config struct
 type Config struct {
 	Env string `mapstructure:"env"`
-	// vp  *viper.Viper
-	DB *gorm.DB
-	R  *redis.Client
+	vp  *viper.Viper
+	DB  *gorm.DB
+	R   *redis.Client
 }
 
 // Database struct
@@ -31,16 +31,16 @@ func NewConfig(env string) *Config {
 
 //Init func
 func (c *Config) Init() error {
-	// vp := viper.New()
-	// vp.AddConfigPath("./config")
-	// vp.SetConfigName(c.Env)
-	// // c.vp = vp
-	// if err := vp.ReadInConfig(); err != nil {
-	// 	return err
-	// }
+	vp := viper.New()
+	vp.AddConfigPath("./config")
+	vp.SetConfigName(c.Env)
+	c.vp = vp
+	if err := vp.ReadInConfig(); err != nil {
+		return err
+	}
 
-	c.DB = connectDatabase()
-	c.R = connectRedis()
+	c.DB = c.connectDatabase()
+	c.R = c.connectRedis()
 	if err := c.binding(); err != nil {
 		fmt.Println("binding err : => ", err)
 		return err
@@ -53,24 +53,26 @@ func (c *Config) Init() error {
 }
 
 func (c *Config) binding() error {
-	// if err := c.vp.Unmarshal(&c); err != nil {
-	// 	return err
-	// }
+	if err := c.vp.Unmarshal(&c); err != nil {
+		return err
+	}
 	return nil
 }
-func connectDatabase() *gorm.DB {
+func (c *Config) connectDatabase() *gorm.DB {
 	//db:3306
-	db, err := gorm.Open("mysql", "root:helloworld@tcp(localhost:6603)/godb?charset=utf8&parseTime=True") //127.0.0.1:3306
+	fmt.Println("vp sql => ", c.vp.GetString("sql.connection"))
+
+	db, err := gorm.Open(c.vp.GetString("sql.dialect"), c.vp.GetString("sql.connection")) //127.0.0.1:3306
 	if err != nil {
 		log.Fatal(err)
 	}
 	return db
 }
-func connectRedis() *redis.Client {
+func (c *Config) connectRedis() *redis.Client {
 	log.Printf("hello redis")
 	//rediss
 	client := redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
+		Addr:     c.vp.GetString("redis.connection"),
 		Password: "",
 		DB:       0,
 	})
