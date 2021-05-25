@@ -38,16 +38,16 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			fmt.Println("_data.Result", val, _err)
 
 			aa := []byte(val)
-			redisValue := UserSession{}
-			json.Unmarshal(aa, &redisValue)
-			fmt.Println("passed", redisValue)
+			rv := UserSession{}
+			json.Unmarshal(aa, &rv)
+			fmt.Println("passed", rv)
 
-			t, _ := time.Parse(time.RFC3339, redisValue.ExpireDate)
+			t, _ := time.Parse(time.RFC3339, rv.ExpireDate)
 			fmt.Println(t)
 
 			now := time.Now()
 			diff := t.Sub(now)
-			fmt.Printf("Lifespan is %+v", diff)
+			fmt.Printf("Lifespan is %+v \n", diff)
 			_diff := int(diff)
 			if _diff <= 0 {
 				fmt.Printf("timeup")

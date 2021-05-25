@@ -11,10 +11,8 @@ import (
 func HashStr(str string) string {
 	// Enter a password and generate a salted hash
 
-	fmt.Println("before")
 	toHash := []byte(str)
 
-	fmt.Println("after bytes")
 	hash := HashAndSalt(toHash)
 
 	fmt.Println("Salted Hash => ", toHash)

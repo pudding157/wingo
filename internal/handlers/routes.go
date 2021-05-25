@@ -80,8 +80,8 @@ func register_module(e *echo.Echo, c *app.Config) {
 		},
 		{
 			HTTPMethod:     http.MethodGet,
-			Endpoint:       "/:userid",
-			HandlerFunc:    UserHandler.Get_Profile,
+			Endpoint:       "/user/profile",
+			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 	}

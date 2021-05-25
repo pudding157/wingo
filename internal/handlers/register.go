@@ -72,22 +72,6 @@ func (h *RegisterHandler) Register(c echo.Context) error {
 
 	fmt.Println("Bind_registerFormModel, ", Bind_registerFormModel)
 
-	// registerFormModel := RegisterFormModel{}
-	// registerFormModel.First_name = c.FormValue("first_name")     // get params
-	// registerFormModel.Last_name = c.FormValue("last_name")       // get params
-	// registerFormModel.Phone_number = c.FormValue("phone_number") // get params
-	// _bank_id, err := strconv.Atoi(c.FormValue("bank_id"))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// registerFormModel.Bank_id = _bank_id                         // get params
-	// registerFormModel.Bank_account = c.FormValue("bank_account") // get params
-	// registerFormModel.Username = c.FormValue("username")         // get params
-	// registerFormModel.Password = c.FormValue("password")         // get params
-	// registerFormModel.Otp = c.FormValue("otp")                   // get params
-
-	// fmt.Println("registerFormModel => ", registerFormModel)
-
 	_passwordHashed := utils.HashStr(Bind_registerFormModel.Password)
 
 	fmt.Println("Hash is => ", _passwordHashed)
