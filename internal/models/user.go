@@ -15,7 +15,7 @@ type User struct {
 }
 
 type UserProfile struct {
-	Name        string `json:"name"`
+	Name        string `json:"full_name"`
 	PhoneNumber string `json:"phone_number"`
 	BankName    string `json:"bank_name"`
 	BankAccount string `json:"bank_account"`

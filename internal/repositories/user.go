@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"winapp/internal/app"
 	"winapp/internal/models"
+	"winapp/internal/utils"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -57,6 +58,7 @@ func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
 	User_Profile.PhoneNumber = User.Phone_number
 	User_Profile.BankAccount = User_bank.Bank_account
 	User_Profile.BankName = Bank.Name
+	User_Profile.Status = utils.MEMBER.String()
 
 	return &User_Profile, nil
 }

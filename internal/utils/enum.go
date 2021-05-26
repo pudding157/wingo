@@ -8,13 +8,20 @@ import (
 type Enum int
 
 const (
-	PHONE_NUMBER Enum = iota
-	EMAIL
+	PHONE_NUMBER Enum = 0 // otp type
+	EMAIL        Enum = 1 // otp type
+
+	MEMBER Enum = 10
+	VIP    Enum = 11
 )
 
 var enumStrings = []string{
-	"phone-number",
-	"email",
+	"phone-number", // otp type
+	"email",        // otp type
+
+	"member", // otp type
+	"vip",    // otp type
+
 }
 
 func EnumFromKey(key string) (*Enum, error) {
