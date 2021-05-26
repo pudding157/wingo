@@ -11,3 +11,11 @@ type RedisValue struct {
 	User_id     int    `json:"user_id"`
 	Expire_date string `json:"expire_date"`
 }
+
+// otp formvalue struct
+type OtpModel struct {
+	Otp       int    `json:"otp" form:"otp"`
+	Recipient string `json:"-" form:"recipient"`
+	Type      string `json:"-" form:"type"`
+	Success   bool   `json:"success"`
+}

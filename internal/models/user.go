@@ -21,3 +21,15 @@ type UserProfile struct {
 	BankAccount string `json:"bank_account"`
 	Status      string `json:"status"`
 }
+
+// otp formvalue struct
+type RegisterFormModel struct {
+	First_name   string `json:"first_name"`
+	Last_name    string `json:"last_name"`
+	Phone_number string `json:"phone_number"`
+	Bank_id      int    `json:"bank_id"`
+	Bank_account string `json:"bank_account"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	Otp          int    `json:"otp"`
+}

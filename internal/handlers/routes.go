@@ -39,7 +39,9 @@ func register_module(e *echo.Echo, c *app.Config) {
 	UserRepo := repositories.NewUserRepo(c)
 	UserHandler := NewUserHandler(UserRepo)
 
-	RegisterHandler := RegisterHandler{c}
+	RegisterRepo := repositories.NewRegisterRepo(c)
+	RegisterHandler := NewRegisterHandler(RegisterRepo)
+	// RegisterHandler := RegisterHandler{c}
 	// LoginHandler := LoginHandler{c}
 	// UserHandler := UserHandler{c}
 	routes := []route{

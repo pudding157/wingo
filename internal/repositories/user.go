@@ -9,7 +9,7 @@ import (
 )
 
 type UserRepository interface {
-	GetProfile(token string) (models.UserProfile, error)
+	GetProfile(token string) (*models.UserProfile, error)
 }
 
 type UserRepo struct {
@@ -20,7 +20,7 @@ func NewUserRepo(c *app.Config) *UserRepo {
 	return &UserRepo{c: c}
 }
 
-func (r *UserRepo) GetProfile(token string) (models.UserProfile, error) {
+func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
 
 	// auth_header := c.Request().Header.Get("Authorization")
 	// auth_len := len(auth_header)
@@ -35,6 +35,7 @@ func (r *UserRepo) GetProfile(token string) (models.UserProfile, error) {
 	})
 	if err != nil || t == nil {
 		fmt.Println("token err", err)
+		return nil, err
 	}
 	// do something with decoded claims
 	// for key, val := range claims {
@@ -57,5 +58,5 @@ func (r *UserRepo) GetProfile(token string) (models.UserProfile, error) {
 	User_Profile.BankAccount = User_bank.Bank_account
 	User_Profile.BankName = Bank.Name
 
-	return User_Profile, err
+	return &User_Profile, nil
 }

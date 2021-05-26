@@ -8,11 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// type LoginHandler struct {
-// 	// DB *gorm.DB
-// 	// R  *redis.Client
-// 	c *app.Config
-// }
 type LoginHandler struct {
 	// // DB *gorm.DB
 	// // R  *redis.Client
