@@ -89,6 +89,30 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
+		{ // this sprint
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/user/change-password",
+			HandlerFunc:    UserHandler.GetProfile,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
+			HandlerFunc:    UserHandler.GetProfile,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
+		{
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/user/payment/:type", //  /withdraw | /deposit แล้วไปเช็ค bind ที่ action แทน
+			HandlerFunc:    UserHandler.GetProfile,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/user/affiliate",
+			HandlerFunc:    UserHandler.GetProfile,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
 	}
 
 	for _, r := range routes {
