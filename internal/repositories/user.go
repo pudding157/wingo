@@ -12,6 +12,7 @@ import (
 
 type UserRepository interface {
 	GetProfile(token string) (*models.UserProfile, error)
+	ChangePassword(token string) error
 }
 
 type UserRepo struct {
@@ -69,4 +70,8 @@ func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
 	User_Profile.Status = mt.String(es)
 
 	return &User_Profile, nil
+}
+
+func (r *UserRepo) ChangePassword(token string) error {
+	return nil
 }
