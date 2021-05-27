@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"time"
 	"winapp/internal/app"
 	"winapp/internal/models"
 	"winapp/internal/utils"
@@ -11,15 +13,16 @@ import (
 
 type UserRepository interface {
 	GetProfile() (*models.UserProfile, error)
-	ChangePassword(ph models.Password_History) error
+	ChangePassword(ph models.Password_History) (*string, error)
 }
 
 type UserRepo struct {
-	c *app.Config
+	c  *app.Config
+	lr *LoginRepo
 }
 
-func NewUserRepo(c *app.Config) *UserRepo {
-	return &UserRepo{c: c}
+func NewUserRepo(c *app.Config, lr *LoginRepo) *UserRepo {
+	return &UserRepo{c: c, lr: lr}
 }
 
 func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
@@ -72,8 +75,51 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	return &User_Profile, nil
 }
 
-func (r *UserRepo) ChangePassword(ph models.Password_History) error {
+func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 
 	//Password_History
-	return nil
+
+	u := models.User{}
+	err := r.c.DB.Where("id = ?", r.c.UI).Find(&u).Error
+	fmt.Println("user => ", u)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	if !utils.DehashStr(u.Password, ph.OldPassword) {
+		return nil, errors.New("Password does not match.")
+	}
+
+	ph.Username = u.Username
+	ph.IPAddress = ""
+	ph.MACAddress = ""
+	ph.Browser = ""
+	_now := time.Now().Format(time.RFC3339)
+	ph.Created_at = _now
+	ph.OldPassword = u.Password
+
+	_pwd := utils.HashStr(ph.NewPassword)
+	ph.NewPassword = _pwd
+
+	if err := r.c.DB.Save(&ph).Error; err != nil {
+		log.Print("err => ", err)
+		return nil, err
+	}
+
+	u.Password = _pwd
+	if err := r.c.DB.Save(&u).Error; err != nil {
+		log.Print("err => ", err)
+		return nil, err
+	}
+
+	err = r.lr.Logout() // force logout and clear token
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := r.lr.GenToken(u)
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
 }

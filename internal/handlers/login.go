@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
@@ -33,6 +34,23 @@ func (r *LoginHandler) Login(c echo.Context) error {
 	_res.Data = map[string]string{
 		"token": *t,
 	}
+
+	return c.JSON(http.StatusOK, _res)
+	// return c.JSON(http.StatusOK, map[string]string{
+	// 	"token": t,
+	// })
+}
+
+func (r *LoginHandler) Logout(c echo.Context) error {
+
+	fmt.Println("Logout")
+	err := r.Repo.Logout()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	_res := models.Response{}
+	_res.Data = true
 
 	return c.JSON(http.StatusOK, _res)
 	// return c.JSON(http.StatusOK, map[string]string{

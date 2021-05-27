@@ -39,7 +39,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 	LoginRepo := repositories.NewLoginRepo(c)
 	LoginHandler := NewLoginHandler(LoginRepo)
 
-	UserRepo := repositories.NewUserRepo(c)
+	UserRepo := repositories.NewUserRepo(c, LoginRepo)
 	UserHandler := NewUserHandler(UserRepo)
 
 	RegisterRepo := repositories.NewRegisterRepo(c)
@@ -86,6 +86,12 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    LoginHandler.Login,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
+		{ // this sprint
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/logout",
+			HandlerFunc:    LoginHandler.Logout,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
@@ -95,7 +101,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/change-password",
-			HandlerFunc:    UserHandler.GetProfile,
+			HandlerFunc:    UserHandler.ChangePassword,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{

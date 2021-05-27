@@ -48,6 +48,9 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			diff := t.Sub(now)
 			fmt.Printf("Lifespan is %+v \n", diff)
 			_diff := int(diff)
+
+			config.T = ""
+			config.UI = 0
 			if _diff <= 0 {
 				fmt.Printf("timeup")
 				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
