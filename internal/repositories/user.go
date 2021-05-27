@@ -56,12 +56,12 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank)
 
 	Bank := models.Bank{}
-	r.c.DB.Where("id = ?", User_bank.Bank_id).Find(&Bank)
+	r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank)
 
 	User_Profile := models.UserProfile{}
 	User_Profile.Name = User.First_name + " " + User.Last_name
 	User_Profile.PhoneNumber = User.Phone_number
-	User_Profile.BankAccount = User_bank.Bank_account
+	User_Profile.BankAccount = User_bank.BankAccount
 	User_Profile.BankName = Bank.Name
 	es := utils.GetEnumArray("userStatus")
 	fmt.Println(es)
@@ -95,7 +95,7 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	ph.MACAddress = ""
 	ph.Browser = ""
 	_now := time.Now().Format(time.RFC3339)
-	ph.Created_at = _now
+	ph.CreatedAt = _now
 	ph.OldPassword = u.Password
 
 	_pwd := utils.HashStr(ph.NewPassword)

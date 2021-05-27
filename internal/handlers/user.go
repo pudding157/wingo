@@ -55,7 +55,7 @@ func (r *UserHandler) ChangePassword(c echo.Context) error {
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
-		_res.Error_message = err.Error()
+		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)

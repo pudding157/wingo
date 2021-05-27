@@ -8,7 +8,7 @@ type Response struct {
 }
 
 type ErrorResponse struct {
-	Error         string      `json:"error"`
-	Error_message interface{} `json:"error_message"`
-	Error_code    string      `json:"error_code"`
+	Error        string      `json:"error"`
+	ErrorMessage interface{} `json:"error_message"`
+	Error_code   string      `json:"error_code"`
 }

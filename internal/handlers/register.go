@@ -41,7 +41,7 @@ func (r *RegisterHandler) Register(c echo.Context) error {
 		fmt.Println("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
-		_res.Error_message = err.Error()
+		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
@@ -70,7 +70,7 @@ func (r *RegisterHandler) Otp_send(c echo.Context) error {
 		fmt.Println("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
-		_res.Error_message = err.Error()
+		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
@@ -100,7 +100,7 @@ func (r *RegisterHandler) Otp(c echo.Context) error {
 		fmt.Println("err => ", err)
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
-		_res.Error_message = err.Error()
+		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
@@ -113,7 +113,7 @@ func (r *RegisterHandler) Otp(c echo.Context) error {
 		msg := map[string]string{
 			"otp": "Otp does not match.",
 		}
-		_res.Error_message = msg
+		_res.ErrorMessage = msg
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)

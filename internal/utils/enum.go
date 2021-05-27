@@ -12,7 +12,10 @@ const (
 	EMAIL        Enum = 1 // otp type
 
 	MEMBER Enum = 0 // user status
-	VIP    Enum = 1 // user status
+	VIP    Enum = 1 // user
+
+	AWAITING Enum = 0 // user status
+	APPROVED Enum = 1 // user status
 )
 
 var otpTypeStrings = []string{
@@ -22,8 +25,13 @@ var otpTypeStrings = []string{
 }
 
 var userStatusString = []string{
-	"member", // otp type
-	"vip",    // otp type
+	"member", // user type
+	"vip",    // user type
+}
+
+var depositStatusString = []string{
+	"awaiting", // deposit type
+	"approved", // deposit type
 }
 
 func GetEnumArray(arrName string) []string {
@@ -32,6 +40,8 @@ func GetEnumArray(arrName string) []string {
 		return userStatusString
 	case "otp":
 		return otpTypeStrings
+	case "depositStatus":
+		return depositStatusString
 	default:
 		return nil
 	}

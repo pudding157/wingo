@@ -22,19 +22,19 @@ func (c *Config_db) Init() {
 func (c *Config_db) migrate_bank() {
 
 	Bank := []models.Bank{
-		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 2, Name: "ธนาคารไทยพาณิชย์ จำกัด (มหาชน)", Is_active: true},
-		{Id: 3, Name: "ธนาคารกรุงเทพ จำกัด (มหาชน)", Is_active: true},
-		{Id: 4, Name: "ธนาคารกรุงศรีอยุธยา จำกัด (มหาชน)", Is_active: true},
-		{Id: 5, Name: "ธนาคารกรุงไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 6, Name: "ธนาคารนครหลวงไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 7, Name: "ธนาคารทหารไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 8, Name: "ธนาคารยูโอบี จำกัด (มหาชน)", Is_active: true},
-		{Id: 9, Name: "ธนาคารออมสิน", Is_active: true},
-		{Id: 10, Name: "ธนาคารอาคารสงเคราะห์", Is_active: true},
-		{Id: 11, Name: "ธนาคารซีไอเอ็มบีไทย จำกัด (มหาชน)", Is_active: true},
-		{Id: 12, Name: "ธนาคารธนชาต จำกัด (มหาชน)", Is_active: true},
-		{Id: 13, Name: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (มหาชน)", Is_active: true},
+		{Id: 1, Name: "ธนาคารกสิกรไทย จำกัด (มหาชน)", IsActive: true},
+		{Id: 2, Name: "ธนาคารไทยพาณิชย์ จำกัด (มหาชน)", IsActive: true},
+		{Id: 3, Name: "ธนาคารกรุงเทพ จำกัด (มหาชน)", IsActive: true},
+		{Id: 4, Name: "ธนาคารกรุงศรีอยุธยา จำกัด (มหาชน)", IsActive: true},
+		{Id: 5, Name: "ธนาคารกรุงไทย จำกัด (มหาชน)", IsActive: true},
+		{Id: 6, Name: "ธนาคารนครหลวงไทย จำกัด (มหาชน)", IsActive: true},
+		{Id: 7, Name: "ธนาคารทหารไทย จำกัด (มหาชน)", IsActive: true},
+		{Id: 8, Name: "ธนาคารยูโอบี จำกัด (มหาชน)", IsActive: true},
+		{Id: 9, Name: "ธนาคารออมสิน", IsActive: true},
+		{Id: 10, Name: "ธนาคารอาคารสงเคราะห์", IsActive: true},
+		{Id: 11, Name: "ธนาคารซีไอเอ็มบีไทย จำกัด (มหาชน)", IsActive: true},
+		{Id: 12, Name: "ธนาคารธนชาต จำกัด (มหาชน)", IsActive: true},
+		{Id: 13, Name: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (มหาชน)", IsActive: true},
 	}
 	if !c.DB.HasTable(Bank) {
 		fmt.Println("No table")
@@ -49,9 +49,9 @@ func (c *Config_db) migrate_bank() {
 
 	n := time.Now().Format(time.RFC3339)
 	Admin_Bank := []models.Admin_Bank{
-		{Id: 1, BankId: 4, Bank_account: "6382625487", UserId: 0, Created_at: n},
-		{Id: 2, BankId: 3, Bank_account: "4552113322", UserId: 0, Created_at: n},
-		{Id: 3, BankId: 5, Bank_account: "9776665544", UserId: 0, Created_at: n},
+		{Id: 1, BankId: 4, BankAccount: "6382625487", UserId: 0, CreatedAt: n},
+		{Id: 2, BankId: 3, BankAccount: "4552113322", UserId: 0, CreatedAt: n},
+		{Id: 3, BankId: 5, BankAccount: "9776665544", UserId: 0, CreatedAt: n},
 	}
 	if !c.DB.HasTable(Admin_Bank) {
 		fmt.Println("No table")

@@ -50,9 +50,9 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	}
 
 	User_bank := models.User_Bank{}
-	User_bank.Bank_id = Bind_registerFormModel.Bank_id
-	User_bank.Bank_account = Bind_registerFormModel.Bank_account
-	User_bank.User_id = User.Id
+	User_bank.BankId = Bind_registerFormModel.Bank_id
+	User_bank.BankAccount = Bind_registerFormModel.Bank_account
+	User_bank.UserId = User.Id
 	User_bank.Created_at = _now
 
 	if err := r.c.DB.Save(&User_bank).Error; err != nil {
@@ -82,9 +82,9 @@ func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {
 
 	history := models.Otp_History{}
 	history.Type = utils.PHONE_NUMBER.Index()
-	history.Send_to = phone_number
+	history.SendTo = phone_number
 	history.Otp = otp
-	history.Created_at = time.Now().Format(time.RFC3339)
+	history.CreatedAt = time.Now().Format(time.RFC3339)
 	fmt.Println("history => ", history)
 
 	if err := r.c.DB.Save(&history).Error; err != nil {
