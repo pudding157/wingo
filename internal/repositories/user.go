@@ -6,13 +6,12 @@ import (
 	"winapp/internal/app"
 	"winapp/internal/models"
 	"winapp/internal/utils"
-
-	"github.com/dgrijalva/jwt-go"
+	// "github.com/dgrijalva/jwt-go"
 )
 
 type UserRepository interface {
-	GetProfile(token string) (*models.UserProfile, error)
-	ChangePassword(token string) error
+	GetProfile() (*models.UserProfile, error)
+	ChangePassword(ph models.Password_History) error
 }
 
 type UserRepo struct {
@@ -23,33 +22,34 @@ func NewUserRepo(c *app.Config) *UserRepo {
 	return &UserRepo{c: c}
 }
 
-func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
+func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 
 	// auth_header := c.Request().Header.Get("Authorization")
 	// auth_len := len(auth_header)
 	// token := auth_header[7:auth_len]
 
-	fmt.Println("token :", token)
+	// fmt.Println("token :", token)
 
-	claims := jwt.MapClaims{}
+	// claims := jwt.MapClaims{}
 
-	t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
-	if err != nil || t == nil {
-		fmt.Println("token err", err)
-		return nil, err
-	}
-	// do something with decoded claims
-	// for key, val := range claims {
-	// 	fmt.Printf("Key: %v, value: %v\n", key, val)
+	// t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+	// 	return []byte("secret"), nil
+	// })
+	// if err != nil || t == nil {
+	// 	fmt.Println("token err", err)
+	// 	return nil, err
 	// }
-	userid := claims["user_id"]
-	// userid := c.Param("userid")
-	fmt.Println("userid :", userid)
+	// // do something with decoded claims
+	// // for key, val := range claims {
+	// // 	fmt.Printf("Key: %v, value: %v\n", key, val)
+	// // }
+	// userid := claims["user_id"]
+	// // userid := c.Param("userid")
+	// fmt.Println("userid :", userid)
 	User := models.User{}
-	r.c.DB.Where("id = ?", userid).Find(&User)
+	r.c.DB.Where("id = ?", r.c.UI).Find(&User)
 	User_bank := models.User_bank{}
+
 	r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank)
 
 	Bank := models.Bank{}
@@ -72,6 +72,8 @@ func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
 	return &User_Profile, nil
 }
 
-func (r *UserRepo) ChangePassword(token string) error {
+func (r *UserRepo) ChangePassword(ph models.Password_History) error {
+
+	//Password_History
 	return nil
 }

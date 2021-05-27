@@ -15,6 +15,8 @@ type Config struct {
 	vp  *viper.Viper
 	DB  *gorm.DB
 	R   *redis.Client
+	T   string
+	UI  int
 }
 
 // Database struct

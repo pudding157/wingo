@@ -74,6 +74,15 @@ func (c *Config_db) migrate_User() {
 		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
 		c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
 	}
+
+	ph := models.Password_History{}
+	if !c.DB.HasTable(ph) {
+		fmt.Println("No table")
+		c.DB.AutoMigrate(&ph) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		fmt.Println("migrate data password history")
+	} else {
+		// c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
+	}
 }
 
 func (c *Config_db) migrate_other() {

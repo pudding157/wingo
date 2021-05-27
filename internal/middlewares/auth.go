@@ -26,7 +26,6 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			auth_len := len(auth_header)
 			token := auth_header[7:auth_len]
 			fmt.Println(token)
-
 			d := config.R.Get(token)
 			if d.Err() != nil {
 				fmt.Println("not passed")
@@ -54,6 +53,9 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
 			} else {
 				fmt.Printf("have time")
+
+				config.T = token
+				config.UI = rv.UserID
 				return next(c)
 			}
 		}

@@ -29,11 +29,11 @@ func NewUserHandler(repo repositories.UserRepository) *UserHandler {
 
 func (r *UserHandler) GetProfile(c echo.Context) error {
 
-	auth_header := c.Request().Header.Get("Authorization")
-	auth_len := len(auth_header)
-	token := auth_header[7:auth_len]
+	// auth_header := c.Request().Header.Get("Authorization")
+	// auth_len := len(auth_header)
+	// token := auth_header[7:auth_len]
 
-	up, err := r.Repo.GetProfile(token)
+	up, err := r.Repo.GetProfile()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -44,4 +44,21 @@ func (r *UserHandler) GetProfile(c echo.Context) error {
 
 	// j, _ := json.Marshal(User_Profile)
 	// return c.String(http.StatusOK, string(j))
+}
+
+func (r *UserHandler) ChangePassword(c echo.Context) error {
+
+	// auth_header := c.Request().Header.Get("Authorization")
+	// auth_len := len(auth_header)
+	// token := auth_header[7:auth_len]
+
+	// ph := models.Password_History{}
+	// up, err := r.Repo.ChangePassword(token)
+	// if err != nil {
+	// 	return c.JSON(http.StatusInternalServerError, err)
+	// }
+
+	_res := models.Response{}
+	_res.Data = "test" // or false
+	return c.JSON(http.StatusOK, _res)
 }
