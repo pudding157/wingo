@@ -51,7 +51,7 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	// fmt.Println("userid :", userid)
 	User := models.User{}
 	r.c.DB.Where("id = ?", r.c.UI).Find(&User)
-	User_bank := models.User_bank{}
+	User_bank := models.User_Bank{}
 
 	r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank)
 

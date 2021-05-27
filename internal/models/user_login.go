@@ -1,7 +1,7 @@
 package models
 
 // log_login struct
-type User_login struct {
+type User_Login struct {
 	Token       string `gorm:"primary_key" json:"token"`
 	Id          int    `gorm:"default:1;uniqueIndex;autoIncrement;not null" json:"id"`
 	User_id     int    `json:"user_id"`

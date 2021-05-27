@@ -44,6 +44,9 @@ func register_module(e *echo.Echo, c *app.Config) {
 
 	RegisterRepo := repositories.NewRegisterRepo(c)
 	RegisterHandler := NewRegisterHandler(RegisterRepo)
+
+	PaymentRepo := repositories.NewPaymentRepo(c)
+	PaymentHandler := NewPaymentHandler(PaymentRepo)
 	// RegisterHandler := RegisterHandler{c}
 	// LoginHandler := LoginHandler{c}
 	// UserHandler := UserHandler{c}
@@ -98,21 +101,27 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
-		{ // this sprint
+		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/change-password",
 			HandlerFunc:    UserHandler.ChangePassword,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
-			HTTPMethod:     http.MethodGet,
-			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
-			HandlerFunc:    UserHandler.GetProfile,
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/user/payment/deposit",
+			HandlerFunc:    PaymentHandler.Deposit,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
-			Endpoint:       "/user/payment/:type", //  /withdraw | /deposit แล้วไปเช็ค bind ที่ action แทน
+			Endpoint:       "/user/payment/withdraw",
+			HandlerFunc:    PaymentHandler.Withdraw,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
 			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
