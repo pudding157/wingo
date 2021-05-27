@@ -107,7 +107,7 @@ func (r *RegisterRepo) Otp(otpModel models.OtpModel) (*int, error) {
 
 	fmt.Println("Otp")
 
-	keyType, _err := utils.EnumFromKey(otpModel.Type)
+	keyType, _err := utils.EnumFromKey(otpModel.Type, utils.GetEnumArray("otp"))
 	if _err != nil {
 		log.Fatal(_err)
 	}

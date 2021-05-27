@@ -11,23 +11,35 @@ const (
 	PHONE_NUMBER Enum = 0 // otp type
 	EMAIL        Enum = 1 // otp type
 
-	MEMBER Enum = 10
-	VIP    Enum = 11
+	MEMBER Enum = 0 // user status
+	VIP    Enum = 1 // user status
 )
 
-var enumStrings = []string{
+var otpTypeStrings = []string{
 	"phone-number", // otp type
 	"email",        // otp type
 
-	"member", // otp type
-	"vip",    // otp type
-
 }
 
-func EnumFromKey(key string) (*Enum, error) {
+var userStatusString = []string{
+	"member", // otp type
+	"vip",    // otp type
+}
+
+func GetEnumArray(arrName string) []string {
+	switch n := arrName; n {
+	case "userStatus":
+		return userStatusString
+	case "otp":
+		return otpTypeStrings
+	default:
+		return nil
+	}
+}
+func EnumFromKey(key string, eString []string) (*Enum, error) {
 
 	var enum Enum
-	for index, enumKey := range enumStrings {
+	for index, enumKey := range eString {
 		if key == enumKey {
 			enum = Enum(index)
 			return &enum, nil
@@ -36,27 +48,27 @@ func EnumFromKey(key string) (*Enum, error) {
 	return nil, fmt.Errorf("%T  : invalid document type '%s'", enum, key)
 }
 
-func EnumFromIndex(i int) (*Enum, error) {
+func EnumFromIndex(i int, eString []string) (*Enum, error) {
 	var enum Enum
 
-	if i >= len(enumStrings) {
+	if i >= len(eString) {
 		return nil, fmt.Errorf("%T  : defined index is out of range", enum)
 	}
 
-	return EnumFromKey(enumStrings[i])
+	return EnumFromKey(eString[i], eString)
 
 }
 
-func ParseEnum(e Enum, key string) Enum {
-	return e.ParseKey(&key)
+func ParseEnum(e Enum, key string, eString []string) Enum {
+	return e.ParseKey(&key, eString)
 }
 
 func (d Enum) Index() int {
 	return int(d)
 }
 
-func (d Enum) String() string {
-	return enumStrings[d.Index()]
+func (d Enum) String(eString []string) string {
+	return eString[d.Index()]
 }
 
 func (d Enum) SetIndex(i int64) {
@@ -65,14 +77,14 @@ func (d Enum) SetIndex(i int64) {
 	v.SetInt(i)
 }
 
-func (d Enum) ParseKey(key *string) Enum {
+func (d Enum) ParseKey(key *string, eString []string) Enum {
 
-	enum, err := EnumFromIndex(0)
+	enum, err := EnumFromIndex(0, eString)
 	if err != nil {
 		panic(fmt.Errorf("%T : no enum define", enum))
 	}
 	if key != nil {
-		e, err := EnumFromKey(*key)
+		e, err := EnumFromKey(*key, eString)
 		if err != nil {
 			return *enum
 		}

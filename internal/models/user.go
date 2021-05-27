@@ -12,6 +12,7 @@ type User struct {
 	Created_at       string `json:"created_at"`
 	Updated_at       string `json:"updated_at"`
 	Registration_otp string `gorm:"not null" json:"registration_otp"`
+	Status           int    `gorm:"not null;default:0" json:"status"`
 }
 
 type UserProfile struct {

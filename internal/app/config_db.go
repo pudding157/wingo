@@ -61,6 +61,8 @@ func (c *Config_db) migrate_User() {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User")
+	} else {
+		// c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 	}
 
 	User_bank := models.User_bank{}

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"fmt"
+	"log"
 	"winapp/internal/app"
 	"winapp/internal/models"
 	"winapp/internal/utils"
@@ -58,7 +59,14 @@ func (r *UserRepo) GetProfile(token string) (*models.UserProfile, error) {
 	User_Profile.PhoneNumber = User.Phone_number
 	User_Profile.BankAccount = User_bank.Bank_account
 	User_Profile.BankName = Bank.Name
-	User_Profile.Status = utils.MEMBER.String()
+	es := utils.GetEnumArray("userStatus")
+	fmt.Println(es)
+	mt, _err := utils.EnumFromIndex(User.Status, es)
+	if _err != nil {
+		log.Fatal(_err)
+	}
+
+	User_Profile.Status = mt.String(es)
 
 	return &User_Profile, nil
 }
