@@ -14,6 +14,7 @@ import (
 type UserRepository interface {
 	GetProfile() (*models.UserProfile, error)
 	ChangePassword(ph models.Password_History) (*string, error)
+	GetAffiliate() error
 }
 
 type UserRepo struct {
@@ -122,4 +123,8 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 		return nil, err
 	}
 	return t, nil
+}
+
+func (r *UserRepo) GetAffiliate() error {
+	return nil
 }

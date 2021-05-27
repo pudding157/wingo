@@ -5,6 +5,7 @@ import (
 	// "fmt"
 	// "log"
 	// "time"
+	"fmt"
 	"winapp/internal/app"
 	// "winapp/internal/models"
 	// "winapp/internal/utils"
@@ -14,6 +15,7 @@ import (
 type PaymentRepository interface {
 	Deposit() error
 	Withdraw() error
+	Transactions(t string) error
 }
 
 type PaymentRepo struct {
@@ -29,5 +31,10 @@ func (r *PaymentRepo) Deposit() error {
 }
 
 func (r *PaymentRepo) Withdraw() error {
+	return nil
+}
+
+func (r *PaymentRepo) Transactions(t string) error {
+	fmt.Println("transaction type => ", t)
 	return nil
 }

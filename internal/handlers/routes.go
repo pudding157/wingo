@@ -92,19 +92,19 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/logout",
-			HandlerFunc:    LoginHandler.Logout,
+			HandlerFunc:    LoginHandler.Logout, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
-			HandlerFunc:    UserHandler.GetProfile,
+			HandlerFunc:    UserHandler.GetProfile, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/change-password",
-			HandlerFunc:    UserHandler.ChangePassword,
+			HandlerFunc:    UserHandler.ChangePassword, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
@@ -122,13 +122,13 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
-			HandlerFunc:    UserHandler.GetProfile,
+			HandlerFunc:    PaymentHandler.Transactions,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/affiliate",
-			HandlerFunc:    UserHandler.GetProfile,
+			HandlerFunc:    UserHandler.GetAffiliate,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 	}

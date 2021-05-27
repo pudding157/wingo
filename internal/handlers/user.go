@@ -3,6 +3,7 @@ package handlers
 import (
 	// "encoding/json"
 
+	"fmt"
 	"net/http"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
@@ -65,5 +66,23 @@ func (r *UserHandler) ChangePassword(c echo.Context) error {
 	_res.Data = map[string]string{
 		"token": *t,
 	} // or false
+	return c.JSON(http.StatusOK, _res)
+}
+
+func (r *UserHandler) GetAffiliate(c echo.Context) error {
+	_res := models.Response{}
+
+	fmt.Println("param => ")
+
+	err := r.Repo.GetAffiliate()
+	if err != nil {
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = "500"
+		return c.JSON(http.StatusInternalServerError, _res)
+	}
+	_res.Data = "withdraw"
 	return c.JSON(http.StatusOK, _res)
 }

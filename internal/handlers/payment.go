@@ -3,6 +3,7 @@ package handlers
 import (
 	// "encoding/json"
 
+	"fmt"
 	"net/http"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
@@ -41,6 +42,25 @@ func (r *PaymentHandler) Withdraw(c echo.Context) error {
 	_res := models.Response{}
 
 	err := r.Repo.Withdraw()
+	if err != nil {
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = "500"
+		return c.JSON(http.StatusInternalServerError, _res)
+	}
+	_res.Data = "withdraw"
+	return c.JSON(http.StatusOK, _res)
+}
+
+func (r *PaymentHandler) Transactions(c echo.Context) error {
+	_res := models.Response{}
+
+	t := c.Param("type")
+	fmt.Println("param => ", t)
+
+	err := r.Repo.Transactions(t)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
