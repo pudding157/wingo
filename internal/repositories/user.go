@@ -60,6 +60,7 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank)
 
 	User_Profile := models.UserProfile{}
+	User_Profile.Username = User.Username
 	User_Profile.Name = User.First_name + " " + User.Last_name
 	User_Profile.PhoneNumber = User.Phone_number
 	User_Profile.BankAccount = User_bank.BankAccount
