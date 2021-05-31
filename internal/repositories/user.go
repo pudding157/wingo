@@ -51,10 +51,11 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	// // userid := c.Param("userid")
 	// fmt.Println("userid :", userid)
 	User := models.User{}
+	fmt.Println("get profile", r.c)
 
 	err := r.c.DB.Where("id = ?", r.c.UI).Find(&User).Error
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -62,14 +63,14 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 
 	err = r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank).Error
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return nil, err
 	}
 
 	Bank := models.Bank{}
 	err = r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank).Error
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -83,7 +84,7 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	fmt.Println(es)
 	mt, _err := utils.EnumFromIndex(User.Status, es)
 	if _err != nil {
-		log.Fatal(_err)
+		fmt.Println(_err)
 	}
 
 	User_Profile.Status = mt.String(es)
@@ -99,7 +100,7 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	err := r.c.DB.Where("id = ?", r.c.UI).Find(&u).Error
 	fmt.Println("user => ", u)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return nil, err
 	}
 	if !utils.DehashStr(u.Password, ph.OldPassword) {
@@ -149,7 +150,7 @@ func (r *UserRepo) GetAffiliate() (*string, error) {
 	err := r.c.DB.Where("id = ?", r.c.UI).Find(&u).Error
 	fmt.Println("user => ", u)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return nil, err
 	}
 	if u.Affiliate == "" {
