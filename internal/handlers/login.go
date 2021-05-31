@@ -50,7 +50,9 @@ func (r *LoginHandler) Logout(c echo.Context) error {
 	}
 
 	_res := models.Response{}
-	_res.Data = true
+	_res.Data = map[string]bool{
+		"success": true,
+	}
 
 	return c.JSON(http.StatusOK, _res)
 	// return c.JSON(http.StatusOK, map[string]string{

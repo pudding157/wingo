@@ -116,19 +116,19 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/payment/deposit",
-			HandlerFunc:    PaymentHandler.Deposit,
+			HandlerFunc:    PaymentHandler.Deposit, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/payment/withdraw",
-			HandlerFunc:    PaymentHandler.Withdraw,
+			HandlerFunc:    PaymentHandler.Withdraw, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
-			HandlerFunc:    PaymentHandler.Transactions,
+			HandlerFunc:    PaymentHandler.Transactions,        // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{

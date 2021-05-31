@@ -43,14 +43,19 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = true
+	_res.Data = map[string]bool{
+		"success": true,
+	}
 	return c.JSON(http.StatusOK, _res)
 }
 
 func (r *PaymentHandler) Withdraw(c echo.Context) error {
 	_res := models.Response{}
-
-	err := r.Repo.Withdraw()
+	ub := models.User_bind_history{} // แค่ไว้รับ
+	c.Bind(&ub)
+	uh := models.User_History{}
+	uh.Amount = ub.Amount
+	err := r.Repo.Withdraw(uh)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -59,7 +64,9 @@ func (r *PaymentHandler) Withdraw(c echo.Context) error {
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = "withdraw"
+	_res.Data = map[string]bool{
+		"success": true,
+	}
 	return c.JSON(http.StatusOK, _res)
 }
 
@@ -69,7 +76,7 @@ func (r *PaymentHandler) Transactions(c echo.Context) error {
 	t := c.Param("type")
 	fmt.Println("param => ", t)
 
-	err := r.Repo.Transactions(t)
+	tr, err := r.Repo.Transactions(t)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -78,6 +85,6 @@ func (r *PaymentHandler) Transactions(c echo.Context) error {
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = "withdraw"
+	_res.Data = tr
 	return c.JSON(http.StatusOK, _res)
 }

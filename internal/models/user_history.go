@@ -9,9 +9,9 @@ type User_bind_history struct {
 
 // transfers
 type User_History struct {
-	Id               int `gorm:"primary_key" json:"id"`
-	UserId           int `json:"user_id"`
-	User             User
+	Id               int     `gorm:"primary_key" json:"id"`
+	UserId           int     `json:"user_id"`
+	User             User    `json:"-"`
 	AdminBankAccount string  `json:"admin_bank_account"`
 	Amount           float64 `gorm:"not null;default:0" json:"amount"`
 	Type             int     `gorm:"not null;default:0" json:"type"` // withdraw & deposit
