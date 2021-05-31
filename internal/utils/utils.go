@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 	"winapp/internal/models"
 
 	"github.com/labstack/echo/v4"
@@ -73,4 +74,14 @@ func GeneratePassword() string {
 		inRune[i], inRune[j] = inRune[j], inRune[i]
 	})
 	return string(inRune)
+}
+
+func StringWithCharset(length int, charset string) string {
+	b := make([]byte, length)
+	seededRand := rand.New(
+		rand.NewSource(time.Now().UTC().UnixNano()))
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
 }

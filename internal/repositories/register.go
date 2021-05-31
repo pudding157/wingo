@@ -39,7 +39,7 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	User.Phone_number = Bind_registerFormModel.Phone_number
 	User.Username = Bind_registerFormModel.Username
 	User.Password = _passwordHashed
-	_now := time.Now().Format(time.RFC3339)
+	_now := time.Now().UTC().Format(time.RFC3339)
 	User.Created_at = _now
 	User.Updated_at = _now
 	User.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
@@ -84,7 +84,7 @@ func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {
 	history.Type = utils.PHONE_NUMBER.Index()
 	history.SendTo = phone_number
 	history.Otp = otp
-	history.CreatedAt = time.Now().Format(time.RFC3339)
+	history.CreatedAt = time.Now().UTC().Format(time.RFC3339)
 	fmt.Println("history => ", history)
 
 	if err := r.c.DB.Save(&history).Error; err != nil {

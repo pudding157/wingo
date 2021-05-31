@@ -14,7 +14,7 @@ import (
 type UserRepository interface {
 	GetProfile() (*models.UserProfile, error)
 	ChangePassword(ph models.Password_History) (*string, error)
-	GetAffiliate() error
+	GetAffiliate() (*string, error)
 }
 
 type UserRepo struct {
@@ -51,13 +51,27 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	// // userid := c.Param("userid")
 	// fmt.Println("userid :", userid)
 	User := models.User{}
-	r.c.DB.Where("id = ?", r.c.UI).Find(&User)
+
+	err := r.c.DB.Where("id = ?", r.c.UI).Find(&User).Error
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
 	User_bank := models.User_Bank{}
 
-	r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank)
+	err = r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank).Error
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
 
 	Bank := models.Bank{}
-	r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank)
+	err = r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank).Error
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
 
 	User_Profile := models.UserProfile{}
 	User_Profile.Username = User.Username
@@ -96,7 +110,7 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	ph.IPAddress = ""
 	ph.MACAddress = ""
 	ph.Browser = ""
-	_now := time.Now().Format(time.RFC3339)
+	_now := time.Now().UTC().Format(time.RFC3339)
 	ph.CreatedAt = _now
 	ph.OldPassword = u.Password
 
@@ -126,6 +140,23 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	return t, nil
 }
 
-func (r *UserRepo) GetAffiliate() error {
-	return nil
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func (r *UserRepo) GetAffiliate() (*string, error) {
+
+	u := models.User{}
+	err := r.c.DB.Where("id = ?", r.c.UI).Find(&u).Error
+	fmt.Println("user => ", u)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	if u.Affiliate == "" {
+		s := utils.StringWithCharset(10, charset)
+		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC().Format(time.RFC3339), Affiliate: s})
+		return &s, nil
+	}
+
+	return &u.Affiliate, nil
 }

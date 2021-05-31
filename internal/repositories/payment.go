@@ -27,7 +27,7 @@ func NewPaymentRepo(c *app.Config) *PaymentRepo {
 
 func (r *PaymentRepo) Deposit(uh models.User_History) error {
 	// keyType, _err := utils.EnumFromIndex(uh.Status, utils.GetEnumArray("depositStatus"))
-	_now := time.Now().Format(time.RFC3339)
+	_now := time.Now().UTC().Format(time.RFC3339)
 
 	uh.UserId = r.c.UI
 	uh.Type = utils.DEPOSIT.Index()
@@ -44,7 +44,7 @@ func (r *PaymentRepo) Deposit(uh models.User_History) error {
 
 func (r *PaymentRepo) Withdraw(uh models.User_History) error {
 	fmt.Println("amount => ", uh.Amount)
-	_now := time.Now().Format(time.RFC3339)
+	_now := time.Now().UTC().Format(time.RFC3339)
 
 	if uh.Amount < 500 {
 		return errors.New("Amount is lower than the withdrawal amount.")

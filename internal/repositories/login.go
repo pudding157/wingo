@@ -44,44 +44,6 @@ func (r *LoginRepo) Login(bu models.User) (*string, error) {
 		fmt.Println("err", err)
 		return nil, err
 	}
-	// token := jwt.New(jwt.SigningMethodHS256)
-
-	// // // Set claims
-	// cl := token.Claims.(jwt.MapClaims)
-	// cl["user_id"] = strconv.Itoa(u.Id)
-	// cl["exp"] = time.Now().Add((time.Hour * 8760) * 2).Unix()
-
-	// t, err := token.SignedString([]byte("secret"))
-	// if err != nil {
-	// 	fmt.Println("err", err)
-	// 	return nil, err
-	// }
-	// // create token and will add to redis too
-	// ul := &models.User_login{}
-	// ul.User_id = u.Id
-	// ul.Username = u.Username
-	// _now := time.Now().Format(time.RFC3339)
-	// ul.Created_at = _now
-	// ul.Token = t
-	// if err := r.c.DB.Save(&ul).Error; err != nil {
-	// 	fmt.Println("err => ", err)
-	// 	// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-	// 	// _res.Error_code = "400"
-	// 	return nil, err
-	// }
-	// fmt.Println("1111111111111")
-	// rt := time.Unix(time.Now().Add((time.Hour*8760)*2).Unix(), 0)
-
-	// rvm := models.RedisValue{}
-	// rvm.User_id = u.Id
-	// rvm.Expire_date = time.Now().Add(time.Hour * 2).Format(time.RFC3339)
-	// rv, _ := json.Marshal(rvm)
-	// erra := r.c.R.Set(t, string(rv), rt.Sub(time.Now())).Err()
-	// fmt.Println("222222222222222222", rvm)
-	// if erra != nil {
-	// 	fmt.Println("2333333333333333333 ", erra)
-	// 	return nil, erra
-	// }
 
 	return t, nil
 }
@@ -92,7 +54,7 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 	// Set claims
 	cl := token.Claims.(jwt.MapClaims)
 	cl["user_id"] = strconv.Itoa(u.Id)
-	cl["exp"] = time.Now().Add((time.Hour * 8760) * 2).Unix()
+	cl["exp"] = time.Now().UTC().Add((time.Hour * 8760) * 2).Unix()
 
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
@@ -103,7 +65,7 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 	ul := &models.User_Login{}
 	ul.User_id = u.Id
 	ul.Username = u.Username
-	_now := time.Now().Format(time.RFC3339)
+	_now := time.Now().UTC().Format(time.RFC3339)
 	ul.Created_at = _now
 	ul.Token = t
 	if err := r.c.DB.Save(&ul).Error; err != nil {
@@ -113,13 +75,13 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 		return nil, err
 	}
 	fmt.Println("1111111111111")
-	rt := time.Unix(time.Now().Add((time.Hour*8760)*2).Unix(), 0)
+	rt := time.Unix(time.Now().UTC().Add((time.Hour*8760)*2).Unix(), 0)
 
 	rvm := models.RedisValue{}
 	rvm.UserId = u.Id
-	rvm.ExpireDate = time.Now().Add(time.Hour * 2).Format(time.RFC3339)
+	rvm.ExpireDate = time.Now().UTC().Add(time.Hour * 2).Format(time.RFC3339)
 	rv, _ := json.Marshal(rvm)
-	erra := r.c.R.Set(t, string(rv), rt.Sub(time.Now())).Err()
+	erra := r.c.R.Set(t, string(rv), rt.Sub(time.Now().UTC())).Err()
 	fmt.Println("222222222222222222", rvm)
 	if erra != nil {
 		fmt.Println("2333333333333333333 ", erra)

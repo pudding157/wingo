@@ -74,7 +74,7 @@ func (r *UserHandler) GetAffiliate(c echo.Context) error {
 
 	fmt.Println("param => ")
 
-	err := r.Repo.GetAffiliate()
+	a, err := r.Repo.GetAffiliate()
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -83,6 +83,6 @@ func (r *UserHandler) GetAffiliate(c echo.Context) error {
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = "withdraw"
+	_res.Data = a
 	return c.JSON(http.StatusOK, _res)
 }
