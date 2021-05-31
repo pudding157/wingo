@@ -24,8 +24,15 @@ func NewPaymentHandler(repo repositories.PaymentRepository) *PaymentHandler {
 
 func (r *PaymentHandler) Deposit(c echo.Context) error {
 	_res := models.Response{}
+	ub := models.User_bind_history{}
+	c.Bind(ub)
+	uh := models.User_History{}
+	uh.AdminBankAccount = ub.AdminBankAccount
+	uh.TransferredAt = ub.TransferredAt
+	uh.Amount = ub.Amount
+	uh.Status = ub.Status
 
-	err := r.Repo.Deposit()
+	err := r.Repo.Deposit(uh)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -34,7 +41,7 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 		_res.Error_code = "500"
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = "deposit"
+	_res.Data = true
 	return c.JSON(http.StatusOK, _res)
 }
 

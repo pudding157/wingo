@@ -34,24 +34,25 @@ func (r *BankHandler) GetBanks(c echo.Context) error {
 		// 	fmt.Println("h.DB.Find(&banks) => ", err)
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-
-	// bankModel := []BankModel{}
-
-	// if err := h.c.DB.Find(&banks).Error; err != nil {
-	// 	fmt.Println("h.DB.Find(&banks) => ", err)
-	// 	return c.JSON(http.StatusBadRequest, err)
-	// }
-	// for _, _bank := range banks {
-
-	// 	_bankModel := BankModel{Id: _bank.Id, Name: _bank.Name}
-	// 	bankModel = append(bankModel, _bankModel)
-	// }
 	_res := models.Response{}
-	_res.Data = banks // or false
+	_res.Data = banks
 
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	return c.JSON(http.StatusOK, _res)
+}
+
+// otp/send action form
+func (r *BankHandler) GetAdminBanks(c echo.Context) error {
+
+	fmt.Println("Get all bank")
+
+	banks, err := r.Repo.GetAdminBanks()
+
+	if err != nil {
+		// 	fmt.Println("h.DB.Find(&banks) => ", err)
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	_res := models.Response{}
+	_res.Data = banks
 
 	return c.JSON(http.StatusOK, _res)
 }

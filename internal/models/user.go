@@ -13,6 +13,8 @@ type User struct {
 	Updated_at       string `json:"updated_at"`
 	Registration_otp string `gorm:"not null" json:"registration_otp"`
 	Status           int    `gorm:"not null;default:0" json:"status"`
+
+	UserHistory []User_History `gorm:"ForeignKey:UserId"`
 }
 
 type UserProfile struct {

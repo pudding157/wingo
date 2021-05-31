@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"time"
 	"winapp/internal/models"
 
 	"github.com/jinzhu/gorm"
@@ -47,11 +46,10 @@ func (c *Config_db) migrate_bank() {
 		fmt.Println("has table")
 	}
 
-	n := time.Now().Format(time.RFC3339)
 	Admin_Bank := []models.Admin_Bank{
-		{Id: 1, BankId: 4, BankAccount: "6382625487", UserId: 0, CreatedAt: n},
-		{Id: 2, BankId: 3, BankAccount: "4552113322", UserId: 0, CreatedAt: n},
-		{Id: 3, BankId: 5, BankAccount: "9776665544", UserId: 0, CreatedAt: n},
+		{Id: 1, BankId: 4, BankAccount: "6382625487", IsActive: true},
+		{Id: 2, BankId: 3, BankAccount: "4552113322", IsActive: true},
+		{Id: 3, BankId: 5, BankAccount: "9776665544", IsActive: true},
 	}
 	if !c.DB.HasTable(Admin_Bank) {
 		fmt.Println("No table")
@@ -98,6 +96,15 @@ func (c *Config_db) migrate_User() {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&ph) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data password history")
+	} else {
+		// c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
+	}
+
+	uh := models.User_History{}
+	if !c.DB.HasTable(uh) {
+		fmt.Println("No table")
+		c.DB.AutoMigrate(&uh) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		fmt.Println("migrate data user history")
 	} else {
 		// c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 	}

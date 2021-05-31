@@ -16,6 +16,9 @@ const (
 
 	AWAITING Enum = 0 // user status
 	APPROVED Enum = 1 // user status
+
+	DEPOSIT  Enum = 0 // transaction type
+	WITHDRAW Enum = 1 // transaction type
 )
 
 var otpTypeStrings = []string{
@@ -32,6 +35,10 @@ var userStatusString = []string{
 var depositStatusString = []string{
 	"awaiting", // deposit type
 	"approved", // deposit type
+}
+var transactionTypeString = []string{
+	"deposit",  // deposit type
+	"withdraw", // deposit type
 }
 
 func GetEnumArray(arrName string) []string {

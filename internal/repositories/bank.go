@@ -8,6 +8,7 @@ import (
 
 type BankRepository interface {
 	GetBanks() ([]models.Bank, error)
+	GetAdminBanks() ([]models.Admin_Bank, error)
 }
 
 type BankRepo struct {
@@ -29,5 +30,35 @@ func (r *BankRepo) GetBanks() ([]models.Bank, error) {
 		return nil, err
 	}
 
+	return b, nil
+}
+
+func (r *BankRepo) GetAdminBanks() ([]models.Admin_Bank, error) {
+
+	fmt.Println("Get all admin bank")
+
+	b := []models.Admin_Bank{}
+
+	if err := r.c.DB.Find(&b).Error; err != nil {
+		fmt.Println("h.DB.Find(&banks) => ", err)
+		return nil, err
+	}
+	banks, err := r.GetBanks()
+	if err != nil {
+		return nil, err
+	}
+
+	for i, _b := range b {
+		bn := ""
+		for _, bb := range banks {
+
+			if bb.Id == _b.BankId {
+				bn = bb.Name
+				break
+			}
+		}
+		b[i].BankName = bn
+	}
+	fmt.Println("b => ", b)
 	return b, nil
 }
