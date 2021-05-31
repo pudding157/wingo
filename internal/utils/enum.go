@@ -49,6 +49,8 @@ func GetEnumArray(arrName string) []string {
 		return otpTypeStrings
 	case "depositStatus":
 		return depositStatusString
+	case "transactionType":
+		return transactionTypeString
 	default:
 		return nil
 	}

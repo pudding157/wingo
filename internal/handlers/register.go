@@ -120,7 +120,7 @@ func (r *RegisterHandler) Otp(c echo.Context) error {
 	}
 
 	_res := models.Response{}
-	otp_res := models.OtpModel{Success: true, Otp: otpModel.Otp}
+	otp_res := models.OtpResut{Success: true, Otp: otpModel.Otp}
 	_res.Data = otp_res // or false
 
 	return c.JSON(http.StatusOK, _res)

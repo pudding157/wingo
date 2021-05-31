@@ -86,7 +86,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/bank/admin",
-			HandlerFunc:    BankHandler.GetAdminBanks,
+			HandlerFunc:    BankHandler.GetAdminBanks, // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{

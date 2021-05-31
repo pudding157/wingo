@@ -25,11 +25,12 @@ func (r *BankRepo) GetBanks() ([]models.Bank, error) {
 
 	b := []models.Bank{}
 
-	if err := r.c.DB.Find(&b).Error; err != nil {
+	// get only isactive
+	if err := r.c.DB.Find(&b, "is_active = 1").Error; err != nil {
 		fmt.Println("h.DB.Find(&banks) => ", err)
 		return nil, err
 	}
-
+	fmt.Println("h.DB.Find(&banks) => true =>  ", b)
 	return b, nil
 }
 

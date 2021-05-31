@@ -4,7 +4,7 @@ package models
 type Bank struct {
 	Id       int    `gorm:"primary_key" json:"id"`
 	Name     string `json:"name"`
-	IsActive bool   `gorm:"default:false" json:"-"`
+	IsActive bool   `gorm:"default:false;column:is_active" json:"-"`
 }
 
 type Admin_Bank struct {

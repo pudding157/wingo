@@ -25,12 +25,14 @@ func NewPaymentHandler(repo repositories.PaymentRepository) *PaymentHandler {
 func (r *PaymentHandler) Deposit(c echo.Context) error {
 	_res := models.Response{}
 	ub := models.User_bind_history{}
-	c.Bind(ub)
+	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.AdminBankAccount = ub.AdminBankAccount
 	uh.TransferredAt = ub.TransferredAt
 	uh.Amount = ub.Amount
 	uh.Status = ub.Status
+
+	fmt.Println("uh => ", uh)
 
 	err := r.Repo.Deposit(uh)
 	if err != nil {

@@ -105,7 +105,7 @@ func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {
 
 func (r *RegisterRepo) Otp(otpModel models.OtpModel) (*int, error) {
 
-	fmt.Println("Otp")
+	fmt.Println("Otp", otpModel)
 
 	keyType, _err := utils.EnumFromKey(otpModel.Type, utils.GetEnumArray("otp"))
 	if _err != nil {

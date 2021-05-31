@@ -1,19 +1,12 @@
 package repositories
 
 import (
-	// "errors"
-	// "fmt"
-	// "log"
-	// "time"
 	"fmt"
 	"log"
 	"time"
 	"winapp/internal/app"
 	"winapp/internal/models"
 	"winapp/internal/utils"
-	// "winapp/internal/models"
-	// "winapp/internal/utils"
-	// "github.com/dgrijalva/jwt-go"
 )
 
 type PaymentRepository interface {
@@ -31,14 +24,14 @@ func NewPaymentRepo(c *app.Config) *PaymentRepo {
 }
 
 func (r *PaymentRepo) Deposit(uh models.User_History) error {
-
+	// keyType, _err := utils.EnumFromIndex(uh.Status, utils.GetEnumArray("depositStatus"))
 	_now := time.Now().Format(time.RFC3339)
 
 	uh.UserId = r.c.UI
 	uh.Type = utils.DEPOSIT.Index()
 	uh.CreatedAt = _now
 	uh.UpdatedAt = _now
-
+	fmt.Println("uh => ", uh)
 	if err := r.c.DB.Save(&uh).Error; err != nil {
 		log.Print("err => ", err)
 		// return nil, err
