@@ -34,6 +34,11 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 
 	User := models.User{}
 
+	const charset = "abcdefghijklmnopqrstuvwxyz" +
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	s := utils.StringWithCharset(10, charset)
+
+	User.Affiliate = s
 	User.First_name = Bind_registerFormModel.First_name
 	User.Last_name = Bind_registerFormModel.Last_name
 	User.Phone_number = Bind_registerFormModel.Phone_number
