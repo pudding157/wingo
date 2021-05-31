@@ -34,8 +34,9 @@ func NewConfig(env string) *Config {
 //Init func
 func (c *Config) Init() error {
 	vp := viper.New()
-	vp.AddConfigPath("./config")
-	vp.SetConfigName(c.Env)
+	// vp.AddConfigPath("./config")
+	// vp.SetConfigName(c.Env)
+	vp.SetConfigFile(".env")
 	c.vp = vp
 	if err := vp.ReadInConfig(); err != nil {
 		return err
@@ -62,9 +63,9 @@ func (c *Config) binding() error {
 }
 func (c *Config) connectDatabase() *gorm.DB {
 	//db:3306
-	fmt.Println("vp sql => ", c.vp.GetString("sql.connection"))
+	fmt.Println("vp sql => ", c.vp.GetString("SQL_DB"))
 
-	db, err := gorm.Open(c.vp.GetString("sql.dialect"), c.vp.GetString("sql.connection")) //127.0.0.1:3306
+	db, err := gorm.Open(c.vp.GetString("SQL_DIALECT"), c.vp.GetString("SQL_DB")) //127.0.0.1:3306
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +75,7 @@ func (c *Config) connectRedis() *redis.Client {
 	log.Printf("hello redis")
 	//rediss
 	client := redis.NewClient(&redis.Options{
-		Addr:     c.vp.GetString("redis.connection"),
+		Addr:     c.vp.GetString("REDIS_DB"),
 		Password: "",
 		DB:       0,
 	})

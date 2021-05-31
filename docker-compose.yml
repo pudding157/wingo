@@ -12,6 +12,8 @@ services:
       - redis
     links:
       - db
+    env_file: 
+      - .env.local
   db:
     image: mysql:8.0
     environment:
