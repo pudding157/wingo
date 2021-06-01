@@ -33,6 +33,9 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	if len(Bind_registerFormModel.Password) < 8 {
 		return nil, errors.New("Password lower than 8 characters.")
 	}
+	if Bind_registerFormModel.Bank_id == 0 {
+		return nil, errors.New("Please select the bank.")
+	}
 
 	_passwordHashed := utils.HashStr(Bind_registerFormModel.Password)
 
