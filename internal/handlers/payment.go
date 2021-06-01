@@ -73,10 +73,10 @@ func (r *PaymentHandler) Withdraw(c echo.Context) error {
 func (r *PaymentHandler) Transactions(c echo.Context) error {
 	_res := models.Response{}
 
-	t := c.Param("type")
-	fmt.Println("param => ", t)
+	qs := c.QueryParams()
+	fmt.Println("QueryParams => ", qs)
 
-	tr, err := r.Repo.Transactions(t)
+	tr, err := r.Repo.Transactions(qs.Get("type"))
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"

@@ -128,8 +128,8 @@ func register_module(e *echo.Echo, c *app.Config) {
 		},
 		{
 			HTTPMethod:     http.MethodGet,
-			Endpoint:       "/user/payment/transactions/:type", // /:type = /all | /withdraw | /deposit
-			HandlerFunc:    PaymentHandler.Transactions,        // success
+			Endpoint:       "/user/payment/transactions", // /:type = /all | /withdraw | /deposit
+			HandlerFunc:    PaymentHandler.Transactions,  // success
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
