@@ -79,7 +79,7 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 
 	rvm := models.RedisValue{}
 	rvm.UserId = u.Id
-	rvm.ExpireDate = time.Now().UTC().Add(time.Hour * 2).Format(time.RFC3339)
+	rvm.ExpireDate = time.Now().UTC().Add((time.Hour * 8760) * 2).Format(time.RFC3339)
 	rv, _ := json.Marshal(rvm)
 	erra := r.c.R.Set(t, string(rv), rt.Sub(time.Now().UTC())).Err()
 	fmt.Println("222222222222222222", rvm)

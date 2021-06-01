@@ -50,7 +50,7 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			t, _ := time.Parse(time.RFC3339, rv.ExpireDate)
 			fmt.Println(t)
 
-			now := time.Now()
+			now := time.Now().UTC()
 			diff := t.Sub(now)
 			fmt.Printf("Lifespan is %+v \n", diff)
 			_diff := int(diff)
@@ -58,10 +58,10 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			config.T = ""
 			config.UI = 0
 			if _diff <= 0 {
-				fmt.Printf("timeup")
+				fmt.Println("timeup")
 				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
 			} else {
-				fmt.Printf("have time")
+				fmt.Println("have time")
 
 				config.T = token
 				config.UI = rv.UserID
