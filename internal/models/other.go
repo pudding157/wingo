@@ -25,3 +25,9 @@ type OtpResut struct {
 	Otp     int  `json:"otp" form:"otp"`
 	Success bool `json:"success"`
 }
+
+type LoadMoreModel struct {
+	Type string `json:"type"`
+	Skip int    `json:"skip"`
+	Take int    `json:"take"`
+}

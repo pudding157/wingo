@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"net/http"
+	"strconv"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -76,7 +77,27 @@ func (r *PaymentHandler) Transactions(c echo.Context) error {
 	qs := c.QueryParams()
 	fmt.Println("QueryParams => ", qs)
 
-	tr, err := r.Repo.Transactions(qs.Get("type"))
+	l := models.LoadMoreModel{}
+
+	l.Type = qs.Get("type")
+
+	if l.Type != "all" && l.Type != "deposit" && l.Type != "withdraw" {
+		l.Type = "all"
+	}
+	s, err := strconv.Atoi(qs.Get("skip"))
+	if err != nil {
+		s = 0
+	}
+	l.Skip = s
+
+	t, err := strconv.Atoi(qs.Get("take"))
+	if err != nil {
+		t = 20
+	}
+	l.Take = t
+
+	tr, err := r.Repo.Transactions(l)
+
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"

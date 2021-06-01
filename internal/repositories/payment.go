@@ -14,7 +14,7 @@ import (
 type PaymentRepository interface {
 	Deposit(uh models.User_History) error
 	Withdraw(uh models.User_History) error
-	Transactions(t string) ([]models.User_History, error)
+	Transactions(t models.LoadMoreModel) ([]models.User_History, error)
 }
 
 type PaymentRepo struct {
@@ -63,18 +63,18 @@ func (r *PaymentRepo) Withdraw(uh models.User_History) error {
 	return nil
 }
 
-func (r *PaymentRepo) Transactions(t string) ([]models.User_History, error) {
+func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_History, error) {
 	fmt.Println("transaction type => ", t)
-	kt, _err := utils.EnumFromKey(t, utils.GetEnumArray("transactionType"))
+	kt, _err := utils.EnumFromKey(t.Type, utils.GetEnumArray("transactionType"))
 	if _err != nil {
 		return nil, errors.New("no transactions type")
 	}
 	uh := []models.User_History{}
 	cs := "user_id = " + strconv.Itoa(r.c.UI)
-	if t != "all" {
+	if t.Type != "all" {
 		cs += " and type = " + strconv.Itoa(kt.Index())
 	}
-	if err := r.c.DB.Find(&uh, cs).Error; err != nil {
+	if err := r.c.DB.Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&uh, cs).Error; err != nil {
 		fmt.Println("h.DB.Find User_History => ", err)
 		return nil, err
 	}
