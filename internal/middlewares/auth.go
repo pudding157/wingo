@@ -36,7 +36,7 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			if d.Err() != nil {
 				fmt.Println("not passed")
 				fmt.Println("err => ,,", d.Err())
-				return d.Err()
+				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
 			}
 
 			val, _err := d.Result()
