@@ -34,7 +34,7 @@ func (r *RegisterHandler) Register(c echo.Context) error {
 	Bind_registerFormModel := &models.RegisterFormModel{}
 	c.Bind(&Bind_registerFormModel)
 
-	fmt.Println("Bind_registerFormModel, ", Bind_registerFormModel)
+	// fmt.Println("Bind_registerFormModel, ", Bind_registerFormModel)
 	t, err := r.Repo.Register(*Bind_registerFormModel)
 
 	if err != nil {

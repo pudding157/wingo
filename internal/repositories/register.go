@@ -37,6 +37,13 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 		return nil, errors.New("Please select the bank.")
 	}
 
+	User_bank := models.User_Bank{}
+	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.Bank_account).Find(&User_bank).Error
+	if err == nil {
+		fmt.Println("bank account already exist", User_bank)
+		return nil, errors.New("bank account already exist.")
+	}
+
 	_passwordHashed := utils.HashStr(Bind_registerFormModel.Password)
 
 	fmt.Println("Hash is => ", _passwordHashed)
@@ -62,8 +69,6 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 		log.Print("err => ", err)
 		return nil, err
 	}
-
-	User_bank := models.User_Bank{}
 	User_bank.BankId = Bind_registerFormModel.Bank_id
 	User_bank.BankAccount = Bind_registerFormModel.Bank_account
 	User_bank.UserId = u.Id
