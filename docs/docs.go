@@ -99,34 +99,27 @@ var doc = `{
         },
         "version": "1.0"
     },
-    "host": "http://localhost:8000/api",
+    "host": "localhost:8000/api",
     "basePath": "/v1",
     "paths": {
-        "/file/upload": {
-            "post": {
-                "description": "Upload file",
+        "/bank": {
+            "get": {
+                "description": "get all banks",
                 "consumes": [
                     "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Upload file",
-                "operationId": "file.upload",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "this is a test file",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
+                "summary": "all banks actived",
+                "operationId": "",
+                "parameters": [                    
                 ],
                 "responses": {
                     "200": {
                         "description": "ok",
                         "schema": {
-                            "type": "string"
+                            "type": "object"
                         }
                     },
                     "400": {
