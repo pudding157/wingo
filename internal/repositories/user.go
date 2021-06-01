@@ -154,7 +154,7 @@ func (r *UserRepo) GetAffiliate() (*string, error) {
 		return nil, err
 	}
 	if u.Affiliate == "" {
-		s := utils.StringWithCharset(10, charset)
+		s := utils.StringWithCharset(16, charset)
 		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC().Format(time.RFC3339), Affiliate: s})
 		return &s, nil
 	}
