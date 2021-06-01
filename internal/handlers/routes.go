@@ -43,7 +43,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 	UserRepo := repositories.NewUserRepo(c, LoginRepo)
 	UserHandler := NewUserHandler(UserRepo)
 
-	RegisterRepo := repositories.NewRegisterRepo(c)
+	RegisterRepo := repositories.NewRegisterRepo(c, LoginRepo)
 	RegisterHandler := NewRegisterHandler(RegisterRepo)
 
 	PaymentRepo := repositories.NewPaymentRepo(c)

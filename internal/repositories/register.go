@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -17,39 +18,44 @@ type RegisterRepository interface {
 }
 
 type RegisterRepo struct {
-	c *app.Config
+	c  *app.Config
+	lr *LoginRepo
 }
 
-func NewRegisterRepo(c *app.Config) *RegisterRepo {
-	return &RegisterRepo{c: c}
+func NewRegisterRepo(c *app.Config, lr *LoginRepo) *RegisterRepo {
+	return &RegisterRepo{c: c, lr: lr}
 }
 
 func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel) (*string, error) {
 
 	fmt.Println("Bind_registerFormModel, ", Bind_registerFormModel)
 
+	if len(Bind_registerFormModel.Password) < 8 {
+		return nil, errors.New("Password lower than 8 characters.")
+	}
+
 	_passwordHashed := utils.HashStr(Bind_registerFormModel.Password)
 
 	fmt.Println("Hash is => ", _passwordHashed)
 
-	User := models.User{}
+	u := models.User{}
 
 	const charset = "abcdefghijklmnopqrstuvwxyz" +
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	s := utils.StringWithCharset(10, charset)
 
-	User.Affiliate = s
-	User.First_name = Bind_registerFormModel.First_name
-	User.Last_name = Bind_registerFormModel.Last_name
-	User.Phone_number = Bind_registerFormModel.Phone_number
-	User.Username = Bind_registerFormModel.Username
-	User.Password = _passwordHashed
+	u.Affiliate = s
+	u.First_name = Bind_registerFormModel.First_name
+	u.Last_name = Bind_registerFormModel.Last_name
+	u.Phone_number = Bind_registerFormModel.Phone_number
+	u.Username = Bind_registerFormModel.Username
+	u.Password = _passwordHashed
 	_now := time.Now().UTC().Format(time.RFC3339)
-	User.Created_at = _now
-	User.Updated_at = _now
-	User.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
+	u.Created_at = _now
+	u.Updated_at = _now
+	u.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
 
-	if err := r.c.DB.Save(&User).Error; err != nil {
+	if err := r.c.DB.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}
@@ -57,16 +63,21 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	User_bank := models.User_Bank{}
 	User_bank.BankId = Bind_registerFormModel.Bank_id
 	User_bank.BankAccount = Bind_registerFormModel.Bank_account
-	User_bank.UserId = User.Id
+	User_bank.UserId = u.Id
 	User_bank.Created_at = _now
 
 	if err := r.c.DB.Save(&User_bank).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}
-	token := "asd"
 
-	return &token, nil
+	// gen token for start login
+	t, err := r.lr.GenToken(u)
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }
 
 func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {
