@@ -63,14 +63,14 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 
 	err = r.c.DB.Where("user_id = ?", User.Id).Find(&User_bank).Error
 	if err != nil {
-		fmt.Println("User_bank DB => ", err)
+		fmt.Println("Bank DB => ", err)
 		return nil, err
 	}
 
 	Bank := models.Bank{}
-	err = r.c.DB.Where("Bank DB => ", User_bank.BankId).Find(&Bank).Error
+	err = r.c.DB.Where("id = ?", User_bank.BankId).Find(&Bank).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Bank DB => ", err)
 		return nil, err
 	}
 
