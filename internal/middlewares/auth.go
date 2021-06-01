@@ -3,6 +3,7 @@ package middlewares
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 	"winapp/internal/app"
 	"winapp/internal/utils"
@@ -23,6 +24,11 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			// pass := false
 			auth_header := c.Request().Header.Get("Authorization")
+			fmt.Println("auth_header = ", auth_header)
+			hb := strings.Contains(auth_header, "Bearer ")
+			if !hb {
+				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
+			}
 			auth_len := len(auth_header)
 			token := auth_header[7:auth_len]
 			fmt.Println(token)
