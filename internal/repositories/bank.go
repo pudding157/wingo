@@ -8,7 +8,7 @@ import (
 
 type BankRepository interface {
 	GetBanks() ([]models.Bank, error)
-	GetAdminBanks() ([]models.Admin_Bank, error)
+	GetAdminBanks() ([]models.AdminBankModel, error)
 }
 
 type BankRepo struct {
@@ -34,11 +34,11 @@ func (r *BankRepo) GetBanks() ([]models.Bank, error) {
 	return b, nil
 }
 
-func (r *BankRepo) GetAdminBanks() ([]models.Admin_Bank, error) {
+func (r *BankRepo) GetAdminBanks() ([]models.AdminBankModel, error) {
 
 	fmt.Println("Get all admin bank")
 
-	b := []models.Admin_Bank{}
+	b := []models.AdminBank{}
 
 	if err := r.c.DB.Find(&b).Error; err != nil {
 		fmt.Println("h.DB.Find(&banks) => ", err)
@@ -49,6 +49,7 @@ func (r *BankRepo) GetAdminBanks() ([]models.Admin_Bank, error) {
 		return nil, err
 	}
 
+	a := []models.AdminBankModel{}
 	for i, _b := range b {
 		bn := ""
 		for _, bb := range banks {
@@ -58,8 +59,12 @@ func (r *BankRepo) GetAdminBanks() ([]models.Admin_Bank, error) {
 				break
 			}
 		}
-		b[i].BankName = bn
+		am := models.AdminBankModel{}
+		am.BankAccount = b[i].BankAccount
+		am.BankName = bn
+		a = append(a, am)
+		// b[i].BankName = bn
 	}
-	fmt.Println("b => ", b)
-	return b, nil
+	fmt.Println("b => ", a)
+	return a, nil
 }

@@ -46,7 +46,7 @@ func (c *Config_db) migrate_bank() {
 		fmt.Println("has table")
 	}
 
-	Admin_Bank := []models.Admin_Bank{
+	Admin_Bank := []models.AdminBank{
 		{Id: 1, BankId: 4, BankAccount: "6382625487", IsActive: true},
 		{Id: 2, BankId: 3, BankAccount: "4552113322", IsActive: true},
 		{Id: 3, BankId: 5, BankAccount: "9776665544", IsActive: true},

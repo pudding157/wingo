@@ -4,8 +4,9 @@ import "time"
 
 type User_bind_history struct {
 	AdminBankAccount string  `json:"bank_account"`
-	TransferredAt    string  `json:"transferred_at"`
 	Amount           float64 `json:"amount"`
+	Type             int     `json:"type"`
+	TransferredAt    string  `json:"transferred_at"`
 	Status           int     `json:"status"`
 }
 

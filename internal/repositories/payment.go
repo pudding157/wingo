@@ -14,7 +14,7 @@ import (
 type PaymentRepository interface {
 	Deposit(uh models.User_History) error
 	Withdraw(uh models.User_History) error
-	Transactions(t models.LoadMoreModel) ([]models.User_History, error)
+	Transactions(t models.LoadMoreModel) ([]models.User_bind_history, int64, error)
 }
 
 type PaymentRepo struct {
@@ -66,21 +66,39 @@ func (r *PaymentRepo) Withdraw(uh models.User_History) error {
 	return nil
 }
 
-func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_History, error) {
+func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_bind_history, int64, error) {
 	fmt.Println("transaction type => ", t)
 	kt, err := utils.EnumFromKey(t.Type, utils.GetEnumArray("transactionType"))
 	if err != nil {
-		return nil, errors.New("no transactions type")
+		return nil, int64(0), errors.New("no transactions type")
 	}
 	uh := []models.User_History{}
 	cs := "user_id = " + strconv.Itoa(r.c.UI)
 	if t.Type != "all" {
 		cs += " and type = " + strconv.Itoa(kt.Index())
 	}
-	if err := r.c.DB.Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&uh, cs).Error; err != nil {
-		fmt.Println("h.DB.Find User_History => ", err)
-		return nil, err
+
+	u := []models.User_bind_history{}
+	c := 0
+	// if err := r.c.DB.Model(&uh).Count(&c).Error; err != nil {
+	// 	fmt.Println("h.DB.COUNT User_History error =>", err)
+	// 	return nil, int64(0), err
+	// }
+	if err := r.c.DB.Model(&uh).Where(cs).Count(&c).Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&uh, cs).Error; err != nil {
+		fmt.Println("h.DB.Find User_History error => ", err)
+		return nil, int64(0), err
+	}
+	for _, uhs := range uh {
+		ubh := models.User_bind_history{}
+		ubh.AdminBankAccount = uhs.AdminBankAccount
+		ubh.Amount = uhs.Amount
+		ubh.Type = uhs.Type
+		ubh.TransferredAt = uhs.TransferredAt.String()
+		ubh.Status = uhs.Status
+
+		u = append(u, ubh)
+		// b[i].BankName = bn
 	}
 
-	return uh, nil
+	return u, int64(c), nil
 }

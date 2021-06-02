@@ -110,16 +110,20 @@ func (r *PaymentHandler) Transactions(c echo.Context) error {
 	}
 	l.Take = t
 
-	tr, err := r.Repo.Transactions(l)
+	tr, cnt, err := r.Repo.Transactions(l)
 
+	l.Count = cnt
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
-		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
-	_res.Data = tr
+	_res.Data = map[string]interface{}{
+		"data":    tr,
+		"filters": l,
+	} // or false
+	// _res.Data = tr
 	return c.JSON(http.StatusOK, _res)
 }

@@ -27,7 +27,8 @@ type OtpResut struct {
 }
 
 type LoadMoreModel struct {
-	Type string `json:"type"`
-	Skip int    `json:"skip"`
-	Take int    `json:"take"`
+	Type  string `json:"type"`
+	Skip  int    `json:"skip"`
+	Take  int    `json:"take"`
+	Count int64  `json:"count"`
 }
