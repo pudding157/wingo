@@ -41,7 +41,7 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 	_res.Data = map[string]bool{
@@ -62,7 +62,7 @@ func (r *PaymentHandler) Withdraw(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 	_res.Data = map[string]bool{
@@ -103,7 +103,7 @@ func (r *PaymentHandler) Transactions(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 	_res.Data = tr

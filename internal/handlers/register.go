@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strconv"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -43,7 +44,7 @@ func (r *RegisterHandler) Register(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
@@ -72,7 +73,7 @@ func (r *RegisterHandler) Otp_send(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
@@ -102,7 +103,7 @@ func (r *RegisterHandler) Otp(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 	fmt.Println("come1", id, *id)
@@ -115,7 +116,7 @@ func (r *RegisterHandler) Otp(c echo.Context) error {
 		}
 		_res.ErrorMessage = msg
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 

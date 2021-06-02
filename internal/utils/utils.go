@@ -3,6 +3,7 @@ package utils
 import (
 	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 	"winapp/internal/models"
@@ -12,15 +13,15 @@ import (
 
 // JSONResponse func
 func JSONResponse(c echo.Context, data interface{}, err error) error {
-	code, message := "200", "OK"
+	code, message := strconv.Itoa(http.StatusOK), "OK"
 	if err != nil {
-		code, message = "500", err.Error()
-		if err.Error() == "409" {
-			code, message = "409", "Some data already exist."
-		} else if err.Error() == "404" {
-			code, message = "404", "Data not found."
-		} else if err.Error() == "401" {
-			code, message = "401", "User Unauthorized."
+		code, message = strconv.Itoa(http.StatusInternalServerError), err.Error()
+		if err.Error() == strconv.Itoa(http.StatusConflict) {
+			code, message = strconv.Itoa(http.StatusConflict), "Some data already exist."
+		} else if err.Error() == strconv.Itoa(http.StatusNotFound) {
+			code, message = strconv.Itoa(http.StatusNotFound), "Data not found."
+		} else if err.Error() == strconv.Itoa(http.StatusUnauthorized) {
+			code, message = strconv.Itoa(http.StatusUnauthorized), "User Unauthorized."
 		}
 	}
 	res := models.Response{

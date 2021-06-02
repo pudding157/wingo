@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strconv"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -31,9 +32,14 @@ func (r *BankHandler) GetBanks(c echo.Context) error {
 	banks, err := r.Repo.GetBanks()
 
 	if err != nil {
-		// 	fmt.Println("h.DB.Find(&banks) => ", err)
-		return c.JSON(http.StatusInternalServerError, err)
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
 	}
+
 	_res := models.Response{}
 	_res.Data = banks
 
@@ -48,9 +54,14 @@ func (r *BankHandler) GetAdminBanks(c echo.Context) error {
 	banks, err := r.Repo.GetAdminBanks()
 
 	if err != nil {
-		// 	fmt.Println("h.DB.Find(&banks) => ", err)
-		return c.JSON(http.StatusInternalServerError, err)
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
 	}
+
 	_res := models.Response{}
 	_res.Data = banks
 

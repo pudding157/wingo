@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -27,7 +28,12 @@ func (r *LoginHandler) Login(c echo.Context) error {
 	t, err := r.Repo.Login(*bu)
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
 	_res := models.Response{}
@@ -45,8 +51,14 @@ func (r *LoginHandler) Logout(c echo.Context) error {
 
 	fmt.Println("Logout")
 	err := r.Repo.Logout()
+
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
 	_res := models.Response{}

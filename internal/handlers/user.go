@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"net/http"
+	"strconv"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -35,8 +36,14 @@ func (r *UserHandler) GetProfile(c echo.Context) error {
 	// token := auth_header[7:auth_len]
 
 	up, err := r.Repo.GetProfile()
+
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
 	_res := models.Response{}
@@ -58,7 +65,7 @@ func (r *UserHandler) ChangePassword(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
@@ -80,7 +87,7 @@ func (r *UserHandler) GetAffiliate(c echo.Context) error {
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
 		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = "500"
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 	_res.Data = a

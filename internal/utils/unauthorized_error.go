@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"net/http"
+	"strconv"
+)
+
 // UnauthorizedError struct
 type UnauthorizedError struct {
 	message string
@@ -7,7 +12,7 @@ type UnauthorizedError struct {
 
 // NewUnauthorizedError func
 func NewUnauthorizedError() *UnauthorizedError {
-	return &UnauthorizedError{message: "401"}
+	return &UnauthorizedError{message: strconv.Itoa(http.StatusUnauthorized)}
 }
 
 func (e UnauthorizedError) Error() string {
