@@ -30,9 +30,9 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.AdminBankAccount = ub.AdminBankAccount
-	// layout := "2006-01-02 15:04:05"
+	// layout := "Tue, 01 Jun 2021 01:21:00 GMT"
 	// ta, err := time.Parse(time.RFC3339, "2006-01-02T15:04:05+07:00")
-	ta, err := time.Parse(time.RFC3339, ub.TransferredAt)
+	ta, err := time.Parse(time.RFC1123, ub.TransferredAt)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
