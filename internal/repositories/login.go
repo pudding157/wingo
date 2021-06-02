@@ -3,6 +3,7 @@ package repositories
 import (
 	// "fmt"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -12,7 +13,6 @@ import (
 	"winapp/internal/utils"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
 )
 
 type LoginRepository interface {
@@ -36,7 +36,8 @@ func (r *LoginRepo) Login(bu models.User) (*string, error) {
 	r.c.DB.Where("username = ?", bu.Username).Find(&u)
 	fmt.Println("user => ", u)
 	if !utils.DehashStr(u.Password, bu.Password) {
-		return nil, echo.ErrUnauthorized
+		// return nil, echo.ErrUnauthorized
+		return nil, errors.New("Password is incorrect.")
 	}
 
 	t, err := r.GenToken(u)
@@ -65,7 +66,7 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 	ul := &models.User_Login{}
 	ul.User_id = u.Id
 	ul.Username = u.Username
-	_now := time.Now().UTC().Format(time.RFC3339)
+	_now := time.Now().UTC()
 	ul.Created_at = _now
 	ul.Token = t
 	if err := r.c.DB.Save(&ul).Error; err != nil {
@@ -74,18 +75,17 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 		// _res.Error_code = "400"
 		return nil, err
 	}
-	fmt.Println("1111111111111")
 	rt := time.Unix(time.Now().UTC().Add((time.Hour*8760)*2).Unix(), 0)
 
 	rvm := models.RedisValue{}
 	rvm.UserId = u.Id
 	rvm.ExpireDate = time.Now().UTC().Add((time.Hour * 8760) * 2).Format(time.RFC3339)
 	rv, _ := json.Marshal(rvm)
-	erra := r.c.R.Set(t, string(rv), rt.Sub(time.Now().UTC())).Err()
+	err = r.c.R.Set(t, string(rv), rt.Sub(time.Now().UTC())).Err()
 	fmt.Println("222222222222222222", rvm)
-	if erra != nil {
-		fmt.Println("2333333333333333333 ", erra)
-		return nil, erra
+	if err != nil {
+		fmt.Println("2333333333333333333 ", err)
+		return nil, err
 	}
 	return &t, nil
 }

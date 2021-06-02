@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 	"winapp/internal/models"
 	"winapp/internal/repositories"
 
@@ -29,13 +30,25 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.AdminBankAccount = ub.AdminBankAccount
-	uh.TransferredAt = ub.TransferredAt
+	// layout := "2006-01-02 15:04:05"
+	// ta, err := time.Parse(time.RFC3339, "2006-01-02T15:04:05+07:00")
+	ta, err := time.Parse(time.RFC3339, ub.TransferredAt)
+	if err != nil {
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
+	}
+	uh.TransferredAt = ta
+	fmt.Println("uh.TransferredAt", uh.TransferredAt)
 	uh.Amount = ub.Amount
 	uh.Status = ub.Status
 
 	fmt.Println("uh => ", uh)
 
-	err := r.Repo.Deposit(uh)
+	err = r.Repo.Deposit(uh)
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
@@ -56,6 +69,7 @@ func (r *PaymentHandler) Withdraw(c echo.Context) error {
 	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.Amount = ub.Amount
+
 	err := r.Repo.Withdraw(uh)
 	if err != nil {
 		_res := models.ErrorResponse{}

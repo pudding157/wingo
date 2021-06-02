@@ -111,7 +111,7 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	ph.IPAddress = ""
 	ph.MACAddress = ""
 	ph.Browser = ""
-	_now := time.Now().UTC().Format(time.RFC3339)
+	_now := time.Now().UTC() //.Format(time.RFC3339)
 	ph.CreatedAt = _now
 	ph.OldPassword = u.Password
 
@@ -155,7 +155,7 @@ func (r *UserRepo) GetAffiliate() (*string, error) {
 	}
 	if u.Affiliate == "" {
 		s := utils.StringWithCharset(16, charset)
-		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC().Format(time.RFC3339), Affiliate: s})
+		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC(), Affiliate: s})
 		return &s, nil
 	}
 
