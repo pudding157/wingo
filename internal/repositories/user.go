@@ -115,16 +115,21 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	ph.CreatedAt = _now
 	ph.OldPassword = u.Password
 
-	_pwd := utils.HashStr(ph.NewPassword)
-	ph.NewPassword = _pwd
+	np := ph.NewPassword
 
-	if err := r.c.DB.Save(&ph).Error; err != nil {
+	_pwd := utils.HashStr(np)
+	fmt.Println("old => ", u.Password)
+	u.Password = _pwd
+
+	if err := r.c.DB.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}
 
-	u.Password = _pwd
-	if err := r.c.DB.Save(&u).Error; err != nil {
+	fmt.Println("newest => ", u.Password)
+	ph.NewPassword = _pwd
+
+	if err := r.c.DB.Save(&ph).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}
