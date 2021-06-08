@@ -72,7 +72,7 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	User_bank.BankId = Bind_registerFormModel.BankId
 	User_bank.BankAccount = Bind_registerFormModel.BankAccount
 	User_bank.UserId = u.Id
-	User_bank.Created_at = _now
+	User_bank.CreatedAt = _now
 
 	if err := r.c.DB.Save(&User_bank).Error; err != nil {
 		log.Print("err => ", err)

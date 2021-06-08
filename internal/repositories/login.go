@@ -64,10 +64,10 @@ func (r *LoginRepo) GenToken(u models.User) (*string, error) {
 	}
 	// create token and will add to redis too
 	ul := &models.User_Login{}
-	ul.User_id = u.Id
+	ul.UserId = u.Id
 	ul.Username = u.Username
 	_now := time.Now().UTC()
-	ul.Created_at = _now
+	ul.CreatedAt = _now
 	ul.Token = t
 	if err := r.c.DB.Save(&ul).Error; err != nil {
 		fmt.Println("err => ", err)
