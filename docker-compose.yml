@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3333:8000"
+    networks:
+      - mysql
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+    env_file: 
+      - .env.local
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: helloworld
+    # command: --init-file /data/application/init.sql #add after run first
+    volumes:
+      # - ./init.sql:/data/application/init.sql #add after run first
+      - ./db:/var/lib/mysql
+    networks:
+      - mysql  
+  redis:
+    image: redis    
+    networks:
+      - mysql
+    ports:
+      - 6379:6379
+networks:
+  mysql:
+    driver: bridge
