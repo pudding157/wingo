@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"time"
 	"winapp/internal/models"
 
 	"github.com/jinzhu/gorm"
@@ -119,5 +120,18 @@ func (c *Config_db) migrate_other() {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&Otp_history) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data Otp_history")
+	}
+
+	Page_Content := models.Page_Content{}
+	if !c.DB.HasTable(Page_Content) {
+		fmt.Println("No table")
+		c.DB.AutoMigrate(&Page_Content) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		_now := time.Now().UTC()
+		Page_Content.Id = 1
+		Page_Content.CreatedAt = _now
+		Page_Content.UpdatedAt = _now
+		Page_Content.RunningText = "start running text"
+		c.DB.Create(Page_Content)
+		fmt.Println("migrate data Page_Content")
 	}
 }

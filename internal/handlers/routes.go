@@ -153,6 +153,13 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    UserHandler.GetAffiliate,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
+
+		{ // this sprint
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/admin/home",
+			HandlerFunc:    HomeHandler.GetHomeDetail,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
 	}
 	if c.Env == "dev" {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)

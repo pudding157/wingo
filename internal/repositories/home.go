@@ -7,7 +7,7 @@ import (
 )
 
 type HomeRepository interface {
-	GetHomeDetail() ([]string, error)
+	GetHomeDetail() (*models.Page_Content, error)
 	GetBlogs(t models.LoadMoreModel) ([]string, error)
 }
 
@@ -19,19 +19,18 @@ func NewHomeRepo(c *app.Config) *HomeRepo {
 	return &HomeRepo{c: c}
 }
 
-func (r *HomeRepo) GetHomeDetail() ([]string, error) {
+func (r *HomeRepo) GetHomeDetail() (*models.Page_Content, error) {
 
 	fmt.Println("Get all text in home")
 
-	// b := []models.Bank{}
+	pc := models.Page_Content{}
 
-	// // get only isactive
-	// if err := r.c.DB.Find(&b, "is_active = 1").Error; err != nil {
-	// 	fmt.Println("h.DB.Find(&banks) => ", err)
-	// 	return nil, err
-	// }
-	// fmt.Println("h.DB.Find(&banks) => true =>  ", b)
-	return []string{"เลขวิ่ง"}, nil
+	if err := r.c.DB.Find(&pc, "id = 1").Error; err != nil {
+		fmt.Println("h.DB.Find(&pc) => ", err)
+		return nil, err
+	}
+	fmt.Println("h.DB.Find page content", pc)
+	return &pc, nil
 }
 
 func (r *HomeRepo) GetBlogs(t models.LoadMoreModel) ([]string, error) {
