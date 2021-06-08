@@ -99,8 +99,8 @@ func (r *RegisterRepo) CheckParentAffiliate(ac string) *int {
 	pid := 0
 	err := r.c.DB.Where("affiliate = ?", ac).Find(&u).Error
 	if err == nil {
-		return nil
 		fmt.Println("user by affiliate not found")
+		return nil
 	} else {
 		pid = u.Id
 	}
