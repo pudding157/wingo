@@ -72,7 +72,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    RegisterHandler.Otp,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
-		{
+		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/register",
 			HandlerFunc:    RegisterHandler.Register,
@@ -84,10 +84,10 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    BankHandler.GetBanks,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
-		{ // this sprint
+		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/bank/admin",
-			HandlerFunc:    BankHandler.GetAdminBanks, // success
+			HandlerFunc:    BankHandler.GetAdminBanks,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
@@ -96,40 +96,40 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    LoginHandler.Login,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
-		{ // this sprint
+		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/logout",
-			HandlerFunc:    LoginHandler.Logout, // success
+			HandlerFunc:    LoginHandler.Logout,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
-		{
+		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
-			HandlerFunc:    UserHandler.GetProfile, // success
+			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/change-password",
-			HandlerFunc:    UserHandler.ChangePassword, // success
+			HandlerFunc:    UserHandler.ChangePassword,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/payment/deposit",
-			HandlerFunc:    PaymentHandler.Deposit, // success
+			HandlerFunc:    PaymentHandler.Deposit,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/user/payment/withdraw",
-			HandlerFunc:    PaymentHandler.Withdraw, // success
+			HandlerFunc:    PaymentHandler.Withdraw,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/payment/transactions", // /:type = /all | /withdraw | /deposit
-			HandlerFunc:    PaymentHandler.Transactions,  // success
+			HandlerFunc:    PaymentHandler.Transactions,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{

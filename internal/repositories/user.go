@@ -27,29 +27,6 @@ func NewUserRepo(c *app.Config, lr *LoginRepo) *UserRepo {
 }
 
 func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
-
-	// auth_header := c.Request().Header.Get("Authorization")
-	// auth_len := len(auth_header)
-	// token := auth_header[7:auth_len]
-
-	// fmt.Println("token :", token)
-
-	// claims := jwt.MapClaims{}
-
-	// t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-	// 	return []byte("secret"), nil
-	// })
-	// if err != nil || t == nil {
-	// 	fmt.Println("token err", err)
-	// 	return nil, err
-	// }
-	// // do something with decoded claims
-	// // for key, val := range claims {
-	// // 	fmt.Printf("Key: %v, value: %v\n", key, val)
-	// // }
-	// userid := claims["user_id"]
-	// // userid := c.Param("userid")
-	// fmt.Println("userid :", userid)
 	User := models.User{}
 	fmt.Println("get profile", r.c)
 
@@ -88,6 +65,30 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	}
 
 	User_Profile.Status = mt.String(es)
+
+	cu := []models.User{}
+	err = r.c.DB.Where("parent_user_id = ?", User.Id).Find(&cu).Error
+	if err != nil {
+		fmt.Println("User DB parent_user_id => ", err)
+		return nil, err
+	} else {
+		for _, _u := range cu {
+			name := utils.HiddenLastString(4, _u.Username)
+			User_Profile.ChildUserNames = append(User_Profile.ChildUserNames, name)
+		}
+	}
+
+	if User.ParentUserId != nil || *User.ParentUserId != 0 {
+		pu := models.User{}
+		err := r.c.DB.Where("id = ?", User.ParentUserId).Find(&pu).Error
+		if err != nil {
+			fmt.Println("User DB => ", err)
+			return nil, err
+		}
+		re := utils.HiddenLastString(4, pu.Username)
+		// re := regexp.MustCompile(`\w{4}$`).ReplaceAllString(pu.Username, "")
+		User_Profile.ParentUserName = re
+	}
 
 	return &User_Profile, nil
 }

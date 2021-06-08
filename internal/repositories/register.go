@@ -65,6 +65,11 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	u.UpdatedAt = _now
 	u.RegistrationOtp = strconv.Itoa(Bind_registerFormModel.Otp)
 
+	pid := r.CheckParentAffiliate(Bind_registerFormModel.AffiliateCode)
+	if pid != nil {
+		u.ParentUserId = pid
+	}
+
 	if err := r.c.DB.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
@@ -86,6 +91,21 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	}
 
 	return t, nil
+}
+
+// ac = Affiliate code
+func (r *RegisterRepo) CheckParentAffiliate(ac string) *int {
+	u := models.User{}
+	pid := 0
+	err := r.c.DB.Where("affiliate = ?", ac).Find(&u).Error
+	if err == nil {
+		return nil
+		fmt.Println("user by affiliate not found")
+	} else {
+		pid = u.Id
+	}
+
+	return &pid
 }
 
 func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {
