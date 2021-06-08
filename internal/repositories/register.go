@@ -66,7 +66,7 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	u.RegistrationOtp = strconv.Itoa(Bind_registerFormModel.Otp)
 
 	pid := r.CheckParentAffiliate(Bind_registerFormModel.AffiliateCode)
-	if pid != nil {
+	if pid != nil && *pid != 0 {
 		u.ParentUserId = pid
 	}
 
