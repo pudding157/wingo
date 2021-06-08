@@ -78,7 +78,7 @@ func (c *Config_db) migrate_User() {
 		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		fmt.Println("migrate data User")
 	} else {
-		// c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		c.DB.AutoMigrate(&User) // สร้าง table, field ต่างๆที่ไม่เคยมี
 		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
 		// c.DB.Model(&User).AddUniqueIndex("affiliate", "affiliate")
 	}

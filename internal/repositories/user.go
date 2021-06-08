@@ -76,8 +76,8 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 
 	User_Profile := models.UserProfile{}
 	User_Profile.Username = User.Username
-	User_Profile.Name = User.First_name + " " + User.Last_name
-	User_Profile.PhoneNumber = User.Phone_number
+	User_Profile.Name = User.FirstName + " " + User.LastName
+	User_Profile.PhoneNumber = User.PhoneNumber
 	User_Profile.BankAccount = User_bank.BankAccount
 	User_Profile.BankName = Bank.Name
 	es := utils.GetEnumArray("userStatus")
@@ -160,7 +160,7 @@ func (r *UserRepo) GetAffiliate() (*string, error) {
 	}
 	if u.Affiliate == "" {
 		s := utils.StringWithCharset(16, charset)
-		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC(), Affiliate: s})
+		r.c.DB.Model(&u).Updates(models.User{UpdatedAt: time.Now().UTC(), Affiliate: s})
 		return &s, nil
 	}
 

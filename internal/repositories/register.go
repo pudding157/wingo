@@ -33,12 +33,12 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	if len(Bind_registerFormModel.Password) < 8 {
 		return nil, errors.New("Password lower than 8 characters.")
 	}
-	if Bind_registerFormModel.Bank_id == 0 {
+	if Bind_registerFormModel.BankId == 0 {
 		return nil, errors.New("Please select the bank.")
 	}
 
 	User_bank := models.User_Bank{}
-	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.Bank_account).Find(&User_bank).Error
+	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.BankAccount).Find(&User_bank).Error
 	if err == nil {
 		fmt.Println("bank account already exist", User_bank)
 		return nil, errors.New("bank account already exist.")
@@ -55,22 +55,22 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	s := utils.StringWithCharset(16, charset)
 
 	u.Affiliate = s
-	u.First_name = Bind_registerFormModel.First_name
-	u.Last_name = Bind_registerFormModel.Last_name
-	u.Phone_number = Bind_registerFormModel.Phone_number
+	u.FirstName = Bind_registerFormModel.FirstName
+	u.LastName = Bind_registerFormModel.LastName
+	u.PhoneNumber = Bind_registerFormModel.PhoneNumber
 	u.Username = Bind_registerFormModel.Username
 	u.Password = _passwordHashed
 	_now := time.Now().UTC() //.Format(time.RFC3339)
-	u.Created_at = _now
-	u.Updated_at = _now
-	u.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
+	u.CreatedAt = _now
+	u.UpdatedAt = _now
+	u.RegistrationOtp = strconv.Itoa(Bind_registerFormModel.Otp)
 
 	if err := r.c.DB.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}
-	User_bank.BankId = Bind_registerFormModel.Bank_id
-	User_bank.BankAccount = Bind_registerFormModel.Bank_account
+	User_bank.BankId = Bind_registerFormModel.BankId
+	User_bank.BankAccount = Bind_registerFormModel.BankAccount
 	User_bank.UserId = u.Id
 	User_bank.Created_at = _now
 
