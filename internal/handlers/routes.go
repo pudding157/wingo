@@ -109,13 +109,13 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/home",
 			HandlerFunc:    HomeHandler.GetHomeDetail,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/blog",
 			HandlerFunc:    HomeHandler.GetBlogs,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
@@ -153,11 +153,10 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    UserHandler.GetAffiliate,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
-
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/home",
-			HandlerFunc:    HomeHandler.GetHomeDetail,
+			HandlerFunc:    HomeHandler.PostHome,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 	}

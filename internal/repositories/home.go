@@ -8,6 +8,7 @@ import (
 
 type HomeRepository interface {
 	GetHomeDetail() (*models.Page_Content, error)
+	PostHome(pc models.Page_Content) (*models.Page_Content, error)
 	GetBlogs(t models.LoadMoreModel) ([]string, error)
 }
 
@@ -30,6 +31,17 @@ func (r *HomeRepo) GetHomeDetail() (*models.Page_Content, error) {
 		return nil, err
 	}
 	fmt.Println("h.DB.Find page content", pc)
+	return &pc, nil
+}
+func (r *HomeRepo) PostHome(pc models.Page_Content) (*models.Page_Content, error) {
+
+	fmt.Println("Get all text in home")
+
+	if err := r.c.DB.Save(&pc).Error; err != nil {
+		fmt.Println("h.DB.Find(&pc) => ", err)
+		return nil, err
+	}
+	fmt.Println("h.DB.save page content", pc)
 	return &pc, nil
 }
 
