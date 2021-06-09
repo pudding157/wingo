@@ -61,7 +61,7 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 	fmt.Println(es)
 	mt, _err := utils.EnumFromIndex(User.Status, es)
 	if _err != nil {
-		fmt.Println(_err)
+		fmt.Println("EnumFromIndex(User.Status, es) => ", _err)
 	}
 
 	User_Profile.Status = mt.String(es)
@@ -77,8 +77,9 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 			User_Profile.ChildUserNames = append(User_Profile.ChildUserNames, name)
 		}
 	}
-
+	fmt.Println("before User.ParentUserId", User.ParentUserId)
 	if User.ParentUserId != nil || *User.ParentUserId != 0 {
+		fmt.Println("after User.ParentUserId", User.ParentUserId)
 		pu := models.User{}
 		err := r.c.DB.Where("id = ?", User.ParentUserId).Find(&pu).Error
 		if err != nil {
@@ -89,6 +90,8 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 		// re := regexp.MustCompile(`\w{4}$`).ReplaceAllString(pu.Username, "")
 		User_Profile.ParentUserName = re
 	}
+
+	fmt.Println("end User_Profile => ", User_Profile)
 
 	return &User_Profile, nil
 }
