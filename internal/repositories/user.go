@@ -78,7 +78,7 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 		}
 	}
 	fmt.Println("before User.ParentUserId", User.ParentUserId)
-	if User.ParentUserId != nil || *User.ParentUserId != 0 {
+	if User.ParentUserId != nil && *User.ParentUserId != 0 {
 		fmt.Println("after User.ParentUserId", User.ParentUserId)
 		pu := models.User{}
 		err := r.c.DB.Where("id = ?", User.ParentUserId).Find(&pu).Error
