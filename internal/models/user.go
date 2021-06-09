@@ -27,7 +27,7 @@ type UserProfile struct {
 	BankName       string   `json:"bank_name"`
 	BankAccount    string   `json:"bank_account"`
 	Status         string   `json:"status"`
-	ParentUserName string   `json:"parent_username"`
+	ParentUserName *string  `json:"parent_username"`
 	ChildUserNames []string `json:"child_usernames"`
 }
 

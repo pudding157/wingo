@@ -88,7 +88,9 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 		}
 		re := utils.HiddenLastString(4, pu.Username)
 		// re := regexp.MustCompile(`\w{4}$`).ReplaceAllString(pu.Username, "")
-		User_Profile.ParentUserName = re
+		User_Profile.ParentUserName = &re
+	} else {
+		User_Profile.ParentUserName = nil
 	}
 
 	fmt.Println("end User_Profile => ", User_Profile)
