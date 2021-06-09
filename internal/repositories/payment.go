@@ -80,10 +80,6 @@ func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_Bind_H
 
 	u := []models.User_Bind_History{}
 	c := 0
-	// if err := r.c.DB.Model(&uh).Count(&c).Error; err != nil {
-	// 	fmt.Println("h.DB.COUNT User_History error =>", err)
-	// 	return nil, int64(0), err
-	// }
 	if err := r.c.DB.Model(&uh).Where(cs).Count(&c).Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&uh, cs).Error; err != nil {
 		fmt.Println("h.DB.Find User_History error => ", err)
 		return nil, int64(0), err
