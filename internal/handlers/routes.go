@@ -119,6 +119,12 @@ func register_module(e *echo.Echo, c *app.Config) {
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/blog",
+			HandlerFunc:    HomeHandler.GetBlogs,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
 			HandlerFunc:    UserHandler.GetProfile,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},

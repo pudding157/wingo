@@ -9,7 +9,7 @@ import (
 type HomeRepository interface {
 	GetHomeDetail() (*models.Page_Content, error)
 	PostHome(pc models.Page_Content) (*models.Page_Content, error)
-	GetBlogs(t models.LoadMoreModel) ([]string, error)
+	GetBlogs(t models.LoadMoreModel) (*[]models.Blog_Content, int64, error)
 }
 
 type HomeRepo struct {
@@ -45,17 +45,17 @@ func (r *HomeRepo) PostHome(pc models.Page_Content) (*models.Page_Content, error
 	return &pc, nil
 }
 
-func (r *HomeRepo) GetBlogs(t models.LoadMoreModel) ([]string, error) {
+func (r *HomeRepo) GetBlogs(t models.LoadMoreModel) (*[]models.Blog_Content, int64, error) {
+	fmt.Println("Get all Blogs in home")
+	fmt.Println("transaction type => ", t)
 
-	fmt.Println("Get all text in home", t)
-
-	// b := []models.Bank{}
-
-	// // get only isactive
-	// if err := r.c.DB.Find(&b, "is_active = 1").Error; err != nil {
-	// 	fmt.Println("h.DB.Find(&banks) => ", err)
-	// 	return nil, err
-	// }
-	// fmt.Println("h.DB.Find(&banks) => true =>  ", b)
-	return []string{"blog kub"}, nil
+	bc := []models.Blog_Content{}
+	c := 0
+	cs := "is_active = 1"
+	if err := r.c.DB.Model(&bc).Where(cs).Count(&c).Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&bc, cs).Error; err != nil {
+		fmt.Println("h.DB.Find Blog_Content error => ", err)
+		return nil, int64(0), err
+	}
+	fmt.Println("h.DB.Find page content", bc)
+	return &bc, int64(c), nil
 }

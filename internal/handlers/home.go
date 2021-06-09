@@ -93,19 +93,23 @@ func (r *HomeHandler) GetBlogs(c echo.Context) error {
 	}
 	l.Take = t
 
-	h, err := r.Repo.GetBlogs(l)
+	h, cnt, err := r.Repo.GetBlogs(l)
 
+	l.Count = cnt
 	if err != nil {
 		_res := models.ErrorResponse{}
 		_res.Error = "Validation Failed"
 		_res.ErrorMessage = err.Error()
-		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
 		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
 		return c.JSON(http.StatusInternalServerError, _res)
 	}
 
 	_res := models.Response{}
-	_res.Data = h
+
+	_res.Data = map[string]interface{}{
+		"data":    h,
+		"filters": l,
+	}
 
 	return c.JSON(http.StatusOK, _res)
 }

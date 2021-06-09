@@ -134,4 +134,21 @@ func (c *Config_db) migrate_other() {
 		c.DB.Create(Page_Content)
 		fmt.Println("migrate data Page_Content")
 	}
+
+	Blog_Content := models.Blog_Content{}
+	if !c.DB.HasTable(Blog_Content) {
+		fmt.Println("No table")
+		c.DB.AutoMigrate(&Blog_Content) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		_now := time.Now().UTC()
+		Blog_Content.Id = 1
+		Blog_Content.Title = "title 1"
+		Blog_Content.Content = "<h1>Success!</h1><br>This content has been entered into database.<br>"
+		Blog_Content.IsActive = true
+		Blog_Content.CreatedBy = 1
+		Blog_Content.UpdatedBy = 1
+		Blog_Content.CreatedAt = _now
+		Blog_Content.UpdatedAt = _now
+		c.DB.Create(Blog_Content)
+		fmt.Println("migrate data Blog_Content")
+	}
 }
