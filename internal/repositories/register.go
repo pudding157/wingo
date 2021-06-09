@@ -97,9 +97,11 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 func (r *RegisterRepo) CheckParentAffiliate(ac string) *int {
 	u := models.User{}
 	pid := 0
+	fmt.Println("ac => ", ac)
+
 	err := r.c.DB.Where("affiliate = ?", ac).Find(&u).Error
-	if err == nil {
-		fmt.Println("user by affiliate not found")
+	if err != nil {
+		fmt.Println(ac+" : user by affiliate not found", err)
 		return nil
 	} else {
 		pid = u.Id
