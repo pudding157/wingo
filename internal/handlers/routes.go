@@ -40,6 +40,9 @@ func register_module(e *echo.Echo, c *app.Config) {
 	HomeRepo := repositories.NewHomeRepo(c)
 	HomeHandler := NewHomeHandler(HomeRepo)
 
+	AdminRepo := repositories.NewAdminRepo(c)
+	AdminHandler := NewAdminHandler(AdminRepo)
+
 	LoginRepo := repositories.NewLoginRepo(c)
 	LoginHandler := NewLoginHandler(LoginRepo)
 
@@ -162,13 +165,19 @@ func register_module(e *echo.Echo, c *app.Config) {
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/home",
-			HandlerFunc:    HomeHandler.PostHome,
+			HandlerFunc:    AdminHandler.PostHome,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/blog",
-			HandlerFunc:    HomeHandler.PostBlog,
+			HandlerFunc:    AdminHandler.PostBlog,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+		},
+		{
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/wallet",
+			HandlerFunc:    AdminHandler.GetWallets,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
 	}

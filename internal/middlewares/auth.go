@@ -15,10 +15,11 @@ import (
 type UserSession struct {
 	UserID     int    `json:"user_id"`
 	ExpireDate string `json:"expire_date"`
+	RoleName   string `json:"role_name"`
 }
 
-// AuthMiddleware func (Each *Handler)
-func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
+// will check role for endpoint
+func AuthMiddleware(cf *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -32,7 +33,7 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			auth_len := len(auth_header)
 			token := auth_header[7:auth_len]
 			fmt.Println(token)
-			d := config.R.Get(token)
+			d := cf.R.Get(token)
 			if d.Err() != nil {
 				fmt.Println("not passed")
 				fmt.Println("err => ,,", d.Err())
@@ -55,16 +56,19 @@ func AuthMiddleware(config *app.Config, e *echo.Echo) echo.MiddlewareFunc {
 			fmt.Printf("Lifespan is %+v \n", diff)
 			_diff := int(diff)
 
-			config.T = ""
-			config.UI = 0
+			cf.T = ""
+			cf.UI = 0
 			if _diff <= 0 {
 				fmt.Println("timeup")
 				return utils.JSONResponse(c, nil, utils.NewUnauthorizedError())
 			} else {
 				fmt.Println("have time")
 
-				config.T = token
-				config.UI = rv.UserID
+				cf.T = token
+				cf.UI = rv.UserID
+				cf.ROLE = rv.RoleName
+
+				fmt.Println("cf.ROLE => ", cf.ROLE)
 				return next(c)
 			}
 		}

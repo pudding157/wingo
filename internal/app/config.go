@@ -11,12 +11,13 @@ import (
 
 // Config struct
 type Config struct {
-	Env string `mapstructure:"env"`
-	vp  *viper.Viper
-	DB  *gorm.DB
-	R   *redis.Client
-	T   string
-	UI  int
+	Env  string `mapstructure:"env"`
+	vp   *viper.Viper
+	DB   *gorm.DB
+	R    *redis.Client
+	T    string
+	UI   int
+	ROLE string
 }
 
 // Database struct

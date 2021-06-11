@@ -104,23 +104,17 @@ func (c *Config_db) migrate_User() {
 		cc := 0
 		c.DB.Model(&User).Count(&cc).Find(&User)
 		if cc > 0 {
-			// uws := []models.User_Wallet{}
 			for _, _u := range User {
 				uw := models.User_Wallet{}
 				uw.UserId = _u.Id
 				uw.Amount = 0
 				uw.CreatedAt = _now
 				uw.UpdatedAt = _now
-				// uws = append(uws, uw)
 
 				if err := c.DB.Save(&uw).Error; err != nil {
 					fmt.Println("err uw => ", err)
 				}
 			}
-			// fmt.Println("uws => ", uws)
-			// if err := c.DB.Save(&uws).Error; err != nil {
-			// 	fmt.Println("err uws => ", err)
-			// }
 		}
 	} else {
 		// c.DB.AutoMigrate(&User_Wallet) // สร้าง table, field ต่างๆที่ไม่เคยมี
