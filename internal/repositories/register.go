@@ -37,10 +37,10 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 		return nil, errors.New("Please select the bank.")
 	}
 
-	User_bank := models.User_Bank{}
-	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.BankAccount).Find(&User_bank).Error
+	ub := models.User_Bank{}
+	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.BankAccount).Find(&ub).Error
 	if err == nil {
-		fmt.Println("bank account already exist", User_bank)
+		fmt.Println("bank account already exist", ub)
 		return nil, errors.New("bank account already exist.")
 	}
 
@@ -74,12 +74,23 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 		log.Print("err => ", err)
 		return nil, err
 	}
-	User_bank.BankId = Bind_registerFormModel.BankId
-	User_bank.BankAccount = Bind_registerFormModel.BankAccount
-	User_bank.UserId = u.Id
-	User_bank.CreatedAt = _now
+	ub.BankId = Bind_registerFormModel.BankId
+	ub.BankAccount = Bind_registerFormModel.BankAccount
+	ub.UserId = u.Id
+	ub.CreatedAt = _now
 
-	if err := r.c.DB.Save(&User_bank).Error; err != nil {
+	if err := r.c.DB.Save(&ub).Error; err != nil {
+		log.Print("err => ", err)
+		return nil, err
+	}
+
+	uw := models.User_Wallet{}
+	uw.UserId = u.Id
+	uw.Amount = 0
+	uw.CreatedAt = _now
+	uw.UpdatedAt = _now
+
+	if err := r.c.DB.Save(&uw).Error; err != nil {
 		log.Print("err => ", err)
 		return nil, err
 	}

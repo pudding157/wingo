@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// import "time"
 // User struct
 type User struct {
 	Id              int            `gorm:"primary_key" json:"id"`
@@ -18,6 +17,7 @@ type User struct {
 	Affiliate       string         `gorm:"" json:"affiliate"`
 	ParentUserId    *int           `gorm:"" json:"parent_user_id"`
 	UserHistory     []User_History `gorm:"ForeignKey:UserId"`
+	// User_Wallet     User_Wallet `json:"User_Wallet"`
 }
 
 type UserProfile struct {

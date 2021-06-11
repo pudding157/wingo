@@ -65,6 +65,7 @@ func (c *Config_db) migrate_bank() {
 }
 
 func (c *Config_db) migrate_User() {
+	_now := time.Now().UTC()
 
 	User_login := models.User_Login{}
 	if !c.DB.HasTable(User_login) {
@@ -91,7 +92,38 @@ func (c *Config_db) migrate_User() {
 		fmt.Println("migrate data User_bank")
 	} else {
 		// ถ้าจะเพิ่ม unique ถ้า ในตารางมีข้อมูลซ้ำจะไม่สามารถทำได้
-		c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
+		// c.DB.Model(&User_bank).AddUniqueIndex("bank_account", "bank_account")
+
+	}
+
+	User_Wallet := models.User_Wallet{}
+	if !c.DB.HasTable(User_Wallet) {
+		// fmt.Println("No table")
+		c.DB.AutoMigrate(&User_Wallet) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		fmt.Println("migrate data User_Wallet")
+		cc := 0
+		c.DB.Model(&User).Count(&cc).Find(&User)
+		if cc > 0 {
+			// uws := []models.User_Wallet{}
+			for _, _u := range User {
+				uw := models.User_Wallet{}
+				uw.UserId = _u.Id
+				uw.Amount = 0
+				uw.CreatedAt = _now
+				uw.UpdatedAt = _now
+				// uws = append(uws, uw)
+
+				if err := c.DB.Save(&uw).Error; err != nil {
+					fmt.Println("err uw => ", err)
+				}
+			}
+			// fmt.Println("uws => ", uws)
+			// if err := c.DB.Save(&uws).Error; err != nil {
+			// 	fmt.Println("err uws => ", err)
+			// }
+		}
+	} else {
+		// c.DB.AutoMigrate(&User_Wallet) // สร้าง table, field ต่างๆที่ไม่เคยมี
 	}
 
 	ph := models.Password_History{}
@@ -114,6 +146,7 @@ func (c *Config_db) migrate_User() {
 }
 
 func (c *Config_db) migrate_other() {
+	_now := time.Now().UTC()
 
 	Otp_history := []models.Otp_History{}
 	if !c.DB.HasTable(Otp_history) {
@@ -126,7 +159,6 @@ func (c *Config_db) migrate_other() {
 	if !c.DB.HasTable(Page_Content) {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&Page_Content) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		_now := time.Now().UTC()
 		Page_Content.Id = 1
 		Page_Content.CreatedAt = _now
 		Page_Content.UpdatedAt = _now
@@ -139,7 +171,6 @@ func (c *Config_db) migrate_other() {
 	if !c.DB.HasTable(Blog_Content) {
 		fmt.Println("No table")
 		c.DB.AutoMigrate(&Blog_Content) // สร้าง table, field ต่างๆที่ไม่เคยมี
-		_now := time.Now().UTC()
 		Blog_Content.Id = 1
 		Blog_Content.Title = "title 1"
 		Blog_Content.Content = "<h1>Success!</h1><br>This content has been entered into database.<br>"
