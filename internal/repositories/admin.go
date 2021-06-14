@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 	"time"
 	"winapp/internal/app"
@@ -92,7 +93,7 @@ func (r *AdminRepo) GetWallets() (*models.WalletsResult, error) {
 func (r *AdminRepo) GetAdminSettingSystem() (*models.AdminSettingSystemResult, error) {
 	as := models.AdminSettingSystemResult{}
 
-	rs, err := r.c.DB.Model(&models.Admin_Setting{}).Select("deposit_withdraw, bet, cancel").Rows()
+	rs, err := r.c.DB.Model(&models.Admin_Setting{}).Where("is_active = true").Select("id, deposit_withdraw, bet, cancel_bet").Rows()
 	fmt.Println(rs)
 	if err != nil {
 		fmt.Println("err DB.Find(&User_Wallet => ", err)
@@ -102,11 +103,15 @@ func (r *AdminRepo) GetAdminSettingSystem() (*models.AdminSettingSystemResult, e
 		r.c.DB.ScanRows(rs, &as)
 		rs.Close()
 	}
+	if as.Id == 0 {
+		return nil, errors.New("not found row data.")
+	}
 	fmt.Println("as => ", as)
 
 	return &as, nil
 }
 
+// use AdminBank
 func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error) {
 	fmt.Println("Post Admin system", a)
 	_now := time.Now().UTC()
@@ -137,7 +142,7 @@ func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) {
 	as := models.AdminSettingBotResult{}
 
-	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("deposit_withdraw, bet, cancel").Rows()
+	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("id, is_active, price_start, price_end, bank_id, account_number").Rows()
 	fmt.Println(rs)
 	if err != nil {
 		fmt.Println("err DB.Find(&Admin_Bank_Condition => ", err)

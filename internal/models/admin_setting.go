@@ -19,6 +19,7 @@ type Admin_Setting struct {
 }
 
 type AdminSettingSystemResult struct {
+	Id              int  `json:"-"`
 	DepositWithdraw bool `json:"deposit_withdraw"`
 	Bet             bool `json:"bet"`
 	CancelBet       bool `json:"cancel_bet"`
