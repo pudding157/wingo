@@ -28,11 +28,6 @@ type route struct {
 
 // NewRouter func
 func NewRouter(e *echo.Echo, c *app.Config) error {
-	register_module(e, c)
-	return nil
-}
-
-func register_module(e *echo.Echo, c *app.Config) {
 
 	BankRepo := repositories.NewBankRepo(c)
 	BankHandler := NewBankHandler(BankRepo)
@@ -189,6 +184,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 		e.Add(r.HTTPMethod, "/api/v1"+r.Endpoint, r.HandlerFunc, r.MiddlewareFunc...)
 	}
 	AddRoutesAdmin(e, c, *HomeHandler, *AdminHandler)
+	return nil
 }
 
 func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminHandler AdminHandler) {
