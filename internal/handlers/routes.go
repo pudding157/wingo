@@ -120,12 +120,12 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    HomeHandler.GetBlogs,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
-		{ // this sprint
-			HTTPMethod:     http.MethodGet,
-			Endpoint:       "/admin/blog",
-			HandlerFunc:    HomeHandler.GetBlogs,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
-		},
+		// { // this sprint
+		// 	HTTPMethod:     http.MethodGet,
+		// 	Endpoint:       "/admin/blog",
+		// 	HandlerFunc:    HomeHandler.GetBlogs,
+		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		// },
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
@@ -162,6 +162,43 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HandlerFunc:    UserHandler.GetAffiliate,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
+		// { // this sprint
+		// 	HTTPMethod:     http.MethodPost,
+		// 	Endpoint:       "/admin/home",
+		// 	HandlerFunc:    AdminHandler.PostHome,
+		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		// },
+		// { // this sprint
+		// 	HTTPMethod:     http.MethodPost,
+		// 	Endpoint:       "/admin/blog",
+		// 	HandlerFunc:    AdminHandler.PostBlog,
+		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		// },
+		// {
+		// 	HTTPMethod:     http.MethodGet,
+		// 	Endpoint:       "/admin/wallet",
+		// 	HandlerFunc:    AdminHandler.GetWallets,
+		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		// },
+	}
+	if c.Env == "dev" {
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
+	}
+	for _, r := range routes {
+
+		e.Add(r.HTTPMethod, "/api/v1"+r.Endpoint, r.HandlerFunc, r.MiddlewareFunc...)
+	}
+	AddRoutesAdmin(e, c, *HomeHandler, *AdminHandler)
+}
+
+func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminHandler AdminHandler) {
+	routes := []route{
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/blog",
+			HandlerFunc:    HomeHandler.GetBlogs,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/home",
@@ -181,10 +218,8 @@ func register_module(e *echo.Echo, c *app.Config) {
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 	}
-	if c.Env == "dev" {
-		e.GET("/swagger/*", echoSwagger.WrapHandler)
-	}
 	for _, r := range routes {
+
 		e.Add(r.HTTPMethod, "/api/v1"+r.Endpoint, r.HandlerFunc, r.MiddlewareFunc...)
 	}
 }
