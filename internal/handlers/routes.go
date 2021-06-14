@@ -226,6 +226,18 @@ func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminH
 			HandlerFunc:    AdminHandler.PostAdminSettingSystem,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/setting/bot",
+			HandlerFunc:    AdminHandler.GetAdminSettingBot,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
+		{ // this sprint
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/admin/setting/bot",
+			HandlerFunc:    AdminHandler.GetAdminSettingBot,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
 	}
 	for _, r := range routes {
 

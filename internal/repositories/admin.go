@@ -14,6 +14,8 @@ type AdminRepository interface {
 
 	GetAdminSettingSystem() (*models.AdminSettingSystemResult, error)
 	PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
+
+	GetAdminSettingBot() (*models.AdminSettingBotResult, error)
 }
 
 type AdminRepo struct {
@@ -110,7 +112,7 @@ func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 	_now := time.Now().UTC()
 
 	as := &models.Admin_Setting{}
-	err := r.c.DB.Last(&as, "is_active = 1").Error
+	err := r.c.DB.Where("is_active = true").Last(&as).Error
 	if err != nil {
 		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
 		return false, err
@@ -130,4 +132,22 @@ func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 	fmt.Println("h.DB.save Admin system", as)
 
 	return true, nil
+}
+
+func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) {
+	as := models.AdminSettingBotResult{}
+
+	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("deposit_withdraw, bet, cancel").Rows()
+	fmt.Println(rs)
+	if err != nil {
+		fmt.Println("err DB.Find(&Admin_Bank_Condition => ", err)
+		return nil, err
+	}
+	for rs.Next() {
+		r.c.DB.ScanRows(rs, &as)
+		rs.Close()
+	}
+	fmt.Println("as => ", as)
+
+	return &as, nil
 }

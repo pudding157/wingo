@@ -176,4 +176,18 @@ func (c *Config_db) migrate_other() {
 		c.DB.Create(Blog_Content)
 		fmt.Println("migrate data Blog_Content")
 	}
+
+	// Admin_Setting := models.Admin_Setting{}
+	// if !c.DB.HasTable(Admin_Setting) {
+	// 	fmt.Println("No table")
+	// 	c.DB.AutoMigrate(&Admin_Setting) // สร้าง table, field ต่างๆที่ไม่เคยมี
+	// 	Admin_Setting.Id = 1
+	// 	Admin_Setting.CreatedBy = 1
+	// 	Admin_Setting.UpdatedBy = 1
+	// 	Admin_Setting.CreatedAt = _now
+	// 	Admin_Setting.UpdatedAt = _now
+	// 	c.DB.Create(Admin_Setting)
+	// 	fmt.Println("migrate data Admin_Setting")
+	// }
+	//Admin_Setting
 }
