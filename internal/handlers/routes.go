@@ -189,6 +189,7 @@ func NewRouter(e *echo.Echo, c *app.Config) error {
 
 func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminHandler AdminHandler) {
 	routes := []route{
+
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/admin/blog",

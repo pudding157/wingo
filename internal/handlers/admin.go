@@ -91,3 +91,10 @@ func (r *AdminHandler) GetWallets(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, _res)
 }
+
+/*
+_res := models.Response{}
+	_res.Data = map[string]bool{
+		"success": true,
+	}
+*/
