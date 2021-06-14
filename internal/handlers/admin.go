@@ -92,6 +92,53 @@ func (r *AdminHandler) GetWallets(c echo.Context) error {
 	return c.JSON(http.StatusOK, _res)
 }
 
+func (r *AdminHandler) GetAdminSettingSystem(c echo.Context) error {
+
+	fmt.Println("Get all setting system")
+
+	w, err := r.Repo.GetAdminSettingSystem()
+	if err != nil {
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
+	}
+
+	_res := models.Response{}
+	_res.Data = w
+
+	return c.JSON(http.StatusOK, _res)
+}
+
+func (r *AdminHandler) PostAdminSettingSystem(c echo.Context) error {
+
+	fmt.Println("Post all setting system")
+
+	a := &models.Admin_Setting{}
+	c.Bind(&a)
+
+	fmt.Println("Admin_Setting => ", a)
+
+	w, err := r.Repo.PostAdminSettingSystem(*a)
+	if err != nil {
+		_res := models.ErrorResponse{}
+		_res.Error = "Validation Failed"
+		_res.ErrorMessage = err.Error()
+		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
+		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
+		return c.JSON(http.StatusInternalServerError, _res)
+	}
+
+	_res := models.Response{}
+	_res.Data = map[string]bool{
+		"success": w,
+	}
+
+	return c.JSON(http.StatusOK, _res)
+}
+
 /*
 _res := models.Response{}
 	_res.Data = map[string]bool{

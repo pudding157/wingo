@@ -11,6 +11,9 @@ type AdminRepository interface {
 	PostHome(pc models.Page_Content) (*models.Page_Content, error)
 	PostBlog(bc models.Blog_Content) (*models.Blog_Content, error)
 	GetWallets() (*models.WalletsResult, error)
+
+	GetAdminSettingSystem() (*models.AdminSettingSystemResult, error)
+	PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 }
 
 type AdminRepo struct {
@@ -82,4 +85,49 @@ func (r *AdminRepo) GetWallets() (*models.WalletsResult, error) {
 	// }
 
 	return &wr, nil
+}
+
+func (r *AdminRepo) GetAdminSettingSystem() (*models.AdminSettingSystemResult, error) {
+	as := models.AdminSettingSystemResult{}
+
+	rs, err := r.c.DB.Model(&models.Admin_Setting{}).Select("deposit_withdraw, bet, cancel").Rows()
+	fmt.Println(rs)
+	if err != nil {
+		fmt.Println("err DB.Find(&User_Wallet => ", err)
+		return nil, err
+	}
+	for rs.Next() {
+		r.c.DB.ScanRows(rs, &as)
+		rs.Close()
+	}
+	fmt.Println("as => ", as)
+
+	return &as, nil
+}
+
+func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error) {
+	fmt.Println("Post Admin system", a)
+	_now := time.Now().UTC()
+
+	as := &models.Admin_Setting{}
+	err := r.c.DB.Last(&as, "is_active = 1").Error
+	if err != nil {
+		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
+		return false, err
+	}
+
+	as.DepositWithdraw = a.DepositWithdraw
+	as.Bet = a.Bet
+	as.CancelBet = a.CancelBet
+
+	as.UpdatedAt = _now
+	as.UpdatedBy = r.c.UI
+
+	if err := r.c.DB.Save(&as).Error; err != nil {
+		fmt.Println("h.DB.Find(&as) => ", err)
+		return false, err
+	}
+	fmt.Println("h.DB.save Admin system", as)
+
+	return true, nil
 }

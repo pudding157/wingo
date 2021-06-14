@@ -208,10 +208,22 @@ func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminH
 			HandlerFunc:    AdminHandler.PostBlog,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
-		{
+		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/admin/wallet",
 			HandlerFunc:    AdminHandler.GetWallets,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/setting",
+			HandlerFunc:    AdminHandler.GetAdminSettingSystem,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
+		{ // this sprint
+			HTTPMethod:     http.MethodPost,
+			Endpoint:       "/admin/setting",
+			HandlerFunc:    AdminHandler.PostAdminSettingSystem,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 	}
