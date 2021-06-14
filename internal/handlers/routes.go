@@ -124,7 +124,7 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/admin/blog",
 			HandlerFunc:    HomeHandler.GetBlogs,
-			MiddlewareFunc: []echo.MiddlewareFunc{},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
@@ -166,19 +166,19 @@ func register_module(e *echo.Echo, c *app.Config) {
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/home",
 			HandlerFunc:    AdminHandler.PostHome,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 		{ // this sprint
 			HTTPMethod:     http.MethodPost,
 			Endpoint:       "/admin/blog",
 			HandlerFunc:    AdminHandler.PostBlog,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 		{
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/admin/wallet",
 			HandlerFunc:    AdminHandler.GetWallets,
-			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 	}
 	if c.Env == "dev" {
