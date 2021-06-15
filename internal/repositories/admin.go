@@ -17,6 +17,7 @@ type AdminRepository interface {
 	PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 
 	GetAdminSettingBot() (*models.AdminSettingBotResult, error)
+	PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error)
 }
 
 type AdminRepo struct {
@@ -30,7 +31,7 @@ func NewAdminRepo(c *app.Config) *AdminRepo {
 func (r *AdminRepo) PostHome(pc models.Page_Content) (*models.Page_Content, error) {
 
 	fmt.Println("Post all text in home")
-
+	pc.Id = 1
 	if err := r.c.DB.Save(&pc).Error; err != nil {
 		fmt.Println("h.DB.Find(&pc) => ", err)
 		return nil, err
@@ -155,4 +156,32 @@ func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) 
 	fmt.Println("as => ", as)
 
 	return &as, nil
+}
+
+// use AdminBank
+func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error) {
+	fmt.Println("Post Admin system", a)
+	_now := time.Now().UTC()
+
+	as := &models.Admin_Setting{}
+	err := r.c.DB.Where("is_active = true").Last(&as).Error
+	if err != nil {
+		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
+		return false, err
+	}
+
+	// as.DepositWithdraw = a.DepositWithdraw
+	// as.Bet = a.Bet
+	// as.CancelBet = a.CancelBet
+
+	as.UpdatedAt = _now
+	as.UpdatedBy = r.c.UI
+
+	// if err := r.c.DB.Save(&as).Error; err != nil {
+	// 	fmt.Println("h.DB.Find(&as) => ", err)
+	// 	return false, err
+	// }
+	// fmt.Println("h.DB.save Admin system", as)
+
+	return true, nil
 }
