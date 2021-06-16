@@ -193,7 +193,10 @@ func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, er
 			return false, err
 		}
 		a.CreatedBy = b.CreatedBy
-		// bc.CreatedAt = b.CreatedAt
+		a.CreatedAt = b.CreatedAt
+		a.AccessToken = b.AccessToken
+		a.ApiRefresh = b.ApiRefresh
+		a.DeviceId = b.DeviceId
 	}
 	a.UpdatedAt = _now
 	a.UpdatedBy = r.c.UI
