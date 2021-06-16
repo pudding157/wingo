@@ -9,7 +9,7 @@ type Admin_Bank_Condition struct {
 	Id          int       `gorm:"primary_key" json:"id"`
 	BankId      int       `json:"bank_id"`
 	Bank        Bank      `gorm:"foreignKey:bank_id" json:"-"`
-	BankAccount string    `gorm:"not null" json:"bank_account"`
+	BankAccount string    `json:"bank_account"`
 	PriceStart  float64   `gorm:"not null;default:0" json:"price_start"`
 	PriceEnd    float64   `gorm:"not null;default:0" json:"price_end"`
 	IsActive    bool      `gorm:"not null;default:1" json:"is_active"`

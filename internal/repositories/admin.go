@@ -31,9 +31,18 @@ func NewAdminRepo(c *app.Config) *AdminRepo {
 func (r *AdminRepo) PostHome(pc models.Page_Content) (*models.Page_Content, error) {
 
 	fmt.Println("Post all text in home")
-	pc.Id = 1
-	if err := r.c.DB.Save(&pc).Error; err != nil {
-		fmt.Println("h.DB.Find(&pc) => ", err)
+	as := &models.Page_Content{}
+	err := r.c.DB.Find(&as).Error
+	if err != nil {
+		fmt.Println("h.DB.Find(&Page_Content) => ", err)
+		return nil, err
+	}
+
+	as.UpdatedAt = time.Now().UTC()
+	as.RunningText = pc.RunningText
+
+	if err := r.c.DB.Save(&as).Error; err != nil {
+		fmt.Println("h.DB.Find(&as) => ", err)
 		return nil, err
 	}
 	fmt.Println("h.DB.save page content", pc)
@@ -56,7 +65,7 @@ func (r *AdminRepo) PostBlog(bc models.Blog_Content) (*models.Blog_Content, erro
 			fmt.Println("err DB.Find(&bc => ", err)
 			return nil, err
 		}
-		bc.CreatedBy = b.CreatedBy
+		// bc.CreatedBy = b.CreatedBy
 		bc.IsActive = true
 		// bc.CreatedAt = b.CreatedAt
 	}
@@ -143,7 +152,7 @@ func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) {
 	as := models.AdminSettingBotResult{}
 
-	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("id, is_active, price_start, price_end, bank_id, account_number").Rows()
+	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("id, is_active, price_start, price_end, bank_id, bank_account").Rows()
 	fmt.Println(rs)
 	if err != nil {
 		fmt.Println("err DB.Find(&Admin_Bank_Condition => ", err)
@@ -153,6 +162,9 @@ func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) 
 		r.c.DB.ScanRows(rs, &as)
 		rs.Close()
 	}
+	if as.Id == 0 {
+		return nil, errors.New("not found row data.")
+	}
 	fmt.Println("as => ", as)
 
 	return &as, nil
@@ -160,28 +172,37 @@ func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) 
 
 // use AdminBank
 func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error) {
-	fmt.Println("Post Admin system", a)
+	fmt.Println("Post Admin setting bot", a)
 	_now := time.Now().UTC()
 
-	as := &models.Admin_Setting{}
-	err := r.c.DB.Where("is_active = true").Last(&as).Error
-	if err != nil {
-		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
-		return false, err
-	}
-
-	// as.DepositWithdraw = a.DepositWithdraw
-	// as.Bet = a.Bet
-	// as.CancelBet = a.CancelBet
-
-	as.UpdatedAt = _now
-	as.UpdatedBy = r.c.UI
-
-	// if err := r.c.DB.Save(&as).Error; err != nil {
-	// 	fmt.Println("h.DB.Find(&as) => ", err)
+	// as := &[]models.Admin_Bank_Condition{}
+	// err := r.c.DB.Model(&as).Where("is_active = true").Error
+	// if err != nil {
+	// 	fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 	// 	return false, err
 	// }
-	// fmt.Println("h.DB.save Admin system", as)
+
+	if a.Id == 0 {
+		a.CreatedBy = r.c.UI
+		a.CreatedAt = _now
+	} else {
+		b := &models.Admin_Bank_Condition{}
+		err := r.c.DB.Find(&b, "id = ?", a.Id).Error
+		if err != nil {
+			fmt.Println("err DB.Find(&bc => ", err)
+			return false, err
+		}
+		a.CreatedBy = b.CreatedBy
+		// bc.CreatedAt = b.CreatedAt
+	}
+	a.UpdatedAt = _now
+	a.UpdatedBy = r.c.UI
+
+	if err := r.c.DB.Save(&a).Error; err != nil {
+		fmt.Println("h.DB.Find(&a) => ", err)
+		return false, err
+	}
+	fmt.Println("h.DB.save Admin_Bank_Condition", a)
 
 	return true, nil
 }

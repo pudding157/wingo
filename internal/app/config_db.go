@@ -195,34 +195,23 @@ func (c *Config_db) migrate_other() {
 		c.DB.Create(Admin_Setting)
 		fmt.Println("migrate data Admin_Setting")
 	}
-	// Admin_Bank_Condition := models.Admin_Bank_Condition{}
-	// if !c.DB.HasTable(Admin_Bank_Condition) {
-	// 	fmt.Println("No table")
-	// 	c.DB.AutoMigrate(&Admin_Bank_Condition) // สร้าง table, field ต่างๆที่ไม่เคยมี
-	// 	Admin_Bank_Condition.Id = 1
 
-	// 	/*
-
-	// Id          int       `gorm:"primary_key" json:"id"`
-	// BankId      int       `json:"bank_id"`
-	// Bank        Bank      `gorm:"foreignKey:bank_id" json:"-"`
-	// BankAccount string    `gorm:"not null" json:"bank_account"`
-	// PriceStart  float64   `gorm:"not null;default:0" json:"price_start"`
-	// PriceEnd    float64   `gorm:"not null;default:0" json:"price_end"`
-	// IsActive    bool      `gorm:"not null;default:1" json:"is_active"`
-	// DeviceId    string    `json:"device_id"`
-	// ApiRefresh  string    `json:"api_refresh"`
-	// AccessToken string    `json:"accesstoken"`
-	// CreatedBy   int       `gorm:"not null" json:"created_by"`
-	// UpdatedBy   int       `gorm:"not null" json:"updated_by"`
-	// CreatedAt   time.Time `gorm:"not null" json:"created_at"`
-	// UpdatedAt   time.Time `gorm:"not null" json:"updated_at"`
-	// 	*/
-	// 	Admin_Bank_Condition.CreatedBy = 1
-	// 	Admin_Bank_Condition.UpdatedBy = 1
-	// 	Admin_Bank_Condition.CreatedAt = _now
-	// 	Admin_Bank_Condition.UpdatedAt = _now
-	// 	c.DB.Create(Admin_Bank_Condition)
-	// 	fmt.Println("migrate data Admin_Bank_Condition")
-	// }
+	Admin_Bank_Condition := models.Admin_Bank_Condition{}
+	if !c.DB.HasTable(Admin_Bank_Condition) {
+		fmt.Println("No table")
+		c.DB.AutoMigrate(&Admin_Bank_Condition) // สร้าง table, field ต่างๆที่ไม่เคยมี
+		// Admin_Bank_Condition.Id = 1
+		// Admin_Bank_Condition.BankId = 4
+		// Admin_Bank_Condition.BankAccount = "6382625487"
+		// Admin_Bank_Condition.PriceStart = 0.00
+		// Admin_Bank_Condition.PriceEnd = 1000
+		// Admin_Bank_Condition.IsActive = true
+		// Admin_Bank_Condition.CreatedBy = 1
+		// Admin_Bank_Condition.UpdatedBy = 1
+		// Admin_Bank_Condition.CreatedAt = _now
+		// Admin_Bank_Condition.UpdatedAt = _now
+		// fmt.Println("_now", Admin_Bank_Condition)
+		// c.DB.Create(Admin_Bank_Condition)
+		fmt.Println("migrate data Admin_Bank_Condition")
+	}
 }
