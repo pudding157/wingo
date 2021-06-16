@@ -18,6 +18,7 @@ type AdminRepository interface {
 
 	GetAdminSettingBot() (*[]models.AdminSettingBotResult, error)
 	PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error)
+	GetBlog(id int) (*models.Blog_Content, error)
 }
 
 type AdminRepo struct {
@@ -163,7 +164,7 @@ func (r *AdminRepo) GetAdminSettingBot() (*[]models.AdminSettingBotResult, error
 	// 	rs.Close()
 	// }
 	s := []models.Admin_Bank_Condition{}
-	err := r.c.DB.Where("is_active = true").Find(&s).Error
+	err := r.c.DB.Find(&s).Error //.Where("is_active = true")
 	if err != nil {
 		fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 		return nil, err
@@ -244,4 +245,16 @@ func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, er
 	fmt.Println("h.DB.save Admin_Bank_Condition", a)
 
 	return true, nil
+}
+
+func (r *AdminRepo) GetBlog(id int) (*models.Blog_Content, error) {
+
+	bc := models.Blog_Content{}
+
+	if err := r.c.DB.Find(&bc, id).Error; err != nil {
+		fmt.Println("h.DB.Find Blog_Content error => ", err)
+		return nil, err
+	}
+	fmt.Println("h.DB.Find Blog Content", bc)
+	return &bc, nil
 }

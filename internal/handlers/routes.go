@@ -115,12 +115,12 @@ func NewRouter(e *echo.Echo, c *app.Config) error {
 			HandlerFunc:    HomeHandler.GetBlogs,
 			MiddlewareFunc: []echo.MiddlewareFunc{},
 		},
-		// { // this sprint
-		// 	HTTPMethod:     http.MethodGet,
-		// 	Endpoint:       "/admin/blog",
-		// 	HandlerFunc:    HomeHandler.GetBlogs,
-		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
-		// },
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/blog/:id",
+			HandlerFunc:    AdminHandler.GetBlog,
+			MiddlewareFunc: []echo.MiddlewareFunc{},
+		},
 		{ // this sprint
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/user/profile",
@@ -157,24 +157,6 @@ func NewRouter(e *echo.Echo, c *app.Config) error {
 			HandlerFunc:    UserHandler.GetAffiliate,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthMiddleware(c, e)},
 		},
-		// { // this sprint
-		// 	HTTPMethod:     http.MethodPost,
-		// 	Endpoint:       "/admin/home",
-		// 	HandlerFunc:    AdminHandler.PostHome,
-		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
-		// },
-		// { // this sprint
-		// 	HTTPMethod:     http.MethodPost,
-		// 	Endpoint:       "/admin/blog",
-		// 	HandlerFunc:    AdminHandler.PostBlog,
-		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
-		// },
-		// {
-		// 	HTTPMethod:     http.MethodGet,
-		// 	Endpoint:       "/admin/wallet",
-		// 	HandlerFunc:    AdminHandler.GetWallets,
-		// 	MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
-		// },
 	}
 	if c.Env == "dev" {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
@@ -194,6 +176,12 @@ func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminH
 			HTTPMethod:     http.MethodGet,
 			Endpoint:       "/admin/blog",
 			HandlerFunc:    HomeHandler.GetBlogs,
+			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
+		},
+		{ // this sprint
+			HTTPMethod:     http.MethodGet,
+			Endpoint:       "/admin/blog/:id",
+			HandlerFunc:    AdminHandler.GetBlog,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 		{ // this sprint
