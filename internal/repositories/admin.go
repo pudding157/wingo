@@ -16,7 +16,7 @@ type AdminRepository interface {
 	GetAdminSettingSystem() (*models.AdminSettingSystemResult, error)
 	PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 
-	GetAdminSettingBot() (*models.AdminSettingBotResult, error)
+	GetAdminSettingBot() (*[]models.AdminSettingBotResult, error)
 	PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error)
 }
 
@@ -149,22 +149,40 @@ func (r *AdminRepo) PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 	return true, nil
 }
 
-func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) {
-	as := models.AdminSettingBotResult{}
+func (r *AdminRepo) GetAdminSettingBot() (*[]models.AdminSettingBotResult, error) {
+	as := []models.AdminSettingBotResult{}
 
-	rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("id, is_active, price_start, price_end, bank_id, bank_account").Rows()
-	fmt.Println(rs)
+	// rs, err := r.c.DB.Model(&models.Admin_Bank_Condition{}).Select("id, is_active, price_start, price_end, bank_id, bank_account").Rows()
+	// fmt.Println("rs => ", rs)
+	// if err != nil {
+	// 	fmt.Println("err DB.Find(&Admin_Bank_Condition => ", err)
+	// 	return nil, err
+	// }
+	// for rs.Next() {
+	// 	r.c.DB.ScanRows(rs, &as)
+	// 	rs.Close()
+	// }
+	s := []models.Admin_Bank_Condition{}
+	err := r.c.DB.Where("is_active = true").Find(&s).Error
 	if err != nil {
-		fmt.Println("err DB.Find(&Admin_Bank_Condition => ", err)
+		fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 		return nil, err
 	}
-	for rs.Next() {
-		r.c.DB.ScanRows(rs, &as)
-		rs.Close()
-	}
-	if as.Id == 0 {
+	if len(s) > 0 {
+		for _, r := range s {
+			b := models.AdminSettingBotResult{}
+			b.Id = r.Id
+			b.IsActive = r.IsActive
+			b.PriceStart = r.PriceStart
+			b.PriceEnd = r.PriceEnd
+			b.BankId = r.BankId
+			b.BankAccount = r.BankAccount
+			as = append(as, b)
+		}
+	} else {
 		return nil, errors.New("not found row data.")
 	}
+
 	fmt.Println("as => ", as)
 
 	return &as, nil

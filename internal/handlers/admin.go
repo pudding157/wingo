@@ -141,7 +141,7 @@ func (r *AdminHandler) PostAdminSettingSystem(c echo.Context) error {
 
 func (r *AdminHandler) GetAdminSettingBot(c echo.Context) error {
 
-	fmt.Println("Get all setting system")
+	fmt.Println("Get all setting bot")
 
 	w, err := r.Repo.GetAdminSettingBot()
 	if err != nil {
