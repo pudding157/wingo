@@ -173,15 +173,33 @@ func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotResult, error) 
 // use AdminBank
 func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error) {
 	fmt.Println("Post Admin setting bot", a)
+
+	if a.PriceStart >= a.PriceEnd {
+		return false, errors.New("price start has higher or equal then price end")
+	}
+
+	as := []models.Admin_Bank_Condition{}
+	err := r.c.DB.Where("is_active = true").Find(&as).Error
+	if err != nil {
+		fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
+		return false, err
+	}
+
+	fmt.Println("Current PriceStart => ", a.PriceStart)
+	fmt.Println("Current PriceEnd => ", a.PriceEnd)
+	for _, abc := range as {
+		fmt.Println(abc.Id, ": PriceStart => ", abc.PriceStart)
+		fmt.Println(abc.Id, ": PriceEnd => ", abc.PriceEnd)
+		if (a.PriceStart <= abc.PriceEnd && a.PriceStart >= abc.PriceStart) ||
+			(a.PriceEnd >= abc.PriceStart && a.PriceEnd <= abc.PriceEnd) {
+			fmt.Println("ติด gap price")
+			return false, errors.New("price start or price end had value in between values before.")
+		} else {
+			fmt.Println("pass")
+		}
+	}
+
 	_now := time.Now().UTC()
-
-	// as := &[]models.Admin_Bank_Condition{}
-	// err := r.c.DB.Model(&as).Where("is_active = true").Error
-	// if err != nil {
-	// 	fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
-	// 	return false, err
-	// }
-
 	if a.Id == 0 {
 		a.CreatedBy = r.c.UI
 		a.CreatedAt = _now
