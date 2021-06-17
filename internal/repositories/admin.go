@@ -240,9 +240,8 @@ func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool,
 		}
 		a.Admin_Bank_Condition[i].UpdatedBy = r.c.UI
 		a.Admin_Bank_Condition[i].UpdatedAt = _now
-		fmt.Println("a.IsBotActive", a.IsBotActive)
-		a.Admin_Bank_Condition[i].IsActive = a.IsBotActive
-		fmt.Println("come", ab)
+		a.Admin_Bank_Condition[i].IsActive = true
+		// a.Admin_Bank_Condition[i].IsActive = a.IsBotActive
 
 		if i != 0 {
 			for u := range sp {
@@ -259,17 +258,35 @@ func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool,
 		se = append(se, ab.PriceEnd)   // start end
 	}
 
-	fmt.Println("final condition")
-
-	fmt.Println(a.Admin_Bank_Condition)
 	tx := r.c.DB.Begin()
+	ids := []int{}
 	for _, bc := range a.Admin_Bank_Condition {
 		if err := tx.Save(&bc).Error; err != nil {
 			fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 			tx.Rollback()
 			return false, err
 		}
+		ids = append(ids, bc.Id)
 	}
+	c := []models.Admin_Bank_Condition{}
+	// sub := tx.Find(&c, ids).SubQuery()
+	if err := tx.Not(ids).Find(&c).Error; err != nil {
+		fmt.Println("id NOT IN ? => ", err)
+		tx.Rollback()
+		return false, err
+	} else {
+		for _, bc := range c {
+			bc.IsActive = false
+			bc.UpdatedBy = r.c.UI
+			bc.UpdatedAt = _now
+			if err := tx.Save(&bc).Error; err != nil {
+				fmt.Println("h.DB.Find(&c) => ", err)
+				tx.Rollback()
+				return false, err
+			}
+		}
+	}
+
 	if err := tx.Save(&ast).Error; err != nil {
 		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
 		tx.Rollback()
@@ -283,6 +300,9 @@ func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool,
 	return true, nil
 }
 
+// func RemoveIndex(s []models.Admin_Bank_Condition, index int) []models.Admin_Bank_Condition {
+// 	return append(s[:index], s[index+1:]...)
+// }
 func (r *AdminRepo) GetBlog(id int) (*models.Blog_Content, error) {
 
 	bc := models.Blog_Content{}
