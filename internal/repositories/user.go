@@ -127,19 +127,22 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	fmt.Println("old => ", u.Password)
 	u.Password = _pwd
 
-	if err := r.c.DB.Save(&u).Error; err != nil {
+	tx := r.c.DB.Begin()
+	if err := tx.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
 
 	fmt.Println("newest => ", u.Password)
 	ph.NewPassword = _pwd
 
-	if err := r.c.DB.Save(&ph).Error; err != nil {
+	if err := tx.Save(&ph).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
-
+	tx.Commit()
 	err = r.lr.Logout() // force logout and clear token
 	if err != nil {
 		return nil, err

@@ -158,31 +158,12 @@ func (r *AdminHandler) GetAdminSettingBots(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, _res)
 }
-func (r *AdminHandler) GetAdminSettingBot(c echo.Context) error {
-
-	fmt.Println("Get all setting bot")
-
-	w, err := r.Repo.GetAdminSettingBot()
-	if err != nil {
-		_res := models.ErrorResponse{}
-		_res.Error = "Validation Failed"
-		_res.ErrorMessage = err.Error()
-		// _res.Error_message = [{"phone_number": "phone number must be at least 10 digits."}]
-		_res.Error_code = strconv.Itoa(http.StatusInternalServerError)
-		return c.JSON(http.StatusInternalServerError, _res)
-	}
-
-	_res := models.Response{}
-	_res.Data = w
-
-	return c.JSON(http.StatusOK, _res)
-}
 
 func (r *AdminHandler) PostAdminSettingBot(c echo.Context) error {
 
 	fmt.Println("Post all setting system")
 
-	a := &models.Admin_Bank_Condition{}
+	a := &models.AdminSettingBotListBind{}
 	c.Bind(&a)
 
 	fmt.Println("Admin_Bank_Condition => ", a)
@@ -198,9 +179,7 @@ func (r *AdminHandler) PostAdminSettingBot(c echo.Context) error {
 	}
 
 	_res := models.Response{}
-	_res.Data = map[string]bool{
-		"success": w,
-	}
+	_res.Data = w
 
 	return c.JSON(http.StatusOK, _res)
 }

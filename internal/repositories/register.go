@@ -75,8 +75,10 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 		u.ParentUserId = pid
 	}
 
-	if err := r.c.DB.Save(&u).Error; err != nil {
+	tx := r.c.DB.Begin()
+	if err := tx.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
 	ub.BankId = Bind_registerFormModel.BankId
@@ -84,8 +86,9 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	ub.UserId = u.Id
 	ub.CreatedAt = _now
 
-	if err := r.c.DB.Save(&ub).Error; err != nil {
+	if err := tx.Save(&ub).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
 
@@ -95,11 +98,12 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	uw.CreatedAt = _now
 	uw.UpdatedAt = _now
 
-	if err := r.c.DB.Save(&uw).Error; err != nil {
+	if err := tx.Save(&uw).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
-
+	tx.Commit()
 	// gen token for start login
 	t, err := r.lr.GenToken(u)
 	if err != nil {

@@ -17,7 +17,7 @@ type AdminRepository interface {
 	PostAdminSettingSystem(a models.Admin_Setting) (bool, error)
 
 	GetAdminSettingBot() (*models.AdminSettingBotListResult, error)
-	PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error)
+	PostAdminSettingBot(a models.AdminSettingBotListBind) (bool, error)
 	GetBlog(id int) (*models.Blog_Content, error)
 }
 
@@ -192,58 +192,92 @@ func (r *AdminRepo) GetAdminSettingBot() (*models.AdminSettingBotListResult, err
 }
 
 // use AdminBank
-func (r *AdminRepo) PostAdminSettingBot(a models.Admin_Bank_Condition) (bool, error) {
+func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool, error) {
 	fmt.Println("Post Admin setting bot", a)
 
-	if a.PriceStart >= a.PriceEnd {
-		return false, errors.New("price start has higher or equal then price end")
+	for _, ab := range a.Admin_Bank_Condition {
+		if ab.PriceStart >= ab.PriceEnd {
+			return false, errors.New("price start has higher or equal then price end")
+		}
 	}
+	_now := time.Now().UTC()
+
+	ast := &models.Admin_Setting{}
+	err := r.c.DB.Where("is_active = true").Find(&ast).Error
+	if err != nil {
+		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
+		return false, err
+	}
+	ast.IsBotActive = a.IsBotActive
+	ast.UpdatedBy = r.c.UI
+	ast.UpdatedAt = _now
 
 	as := []models.Admin_Bank_Condition{}
-	err := r.c.DB.Where("is_active = true").Find(&as).Error
+	err = r.c.DB.Where("is_active = true").Find(&as).Error
 	if err != nil {
 		fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 		return false, err
 	}
-
-	fmt.Println("Current PriceStart => ", a.PriceStart)
-	fmt.Println("Current PriceEnd => ", a.PriceEnd)
-	for _, abc := range as {
-		fmt.Println(abc.Id, ": PriceStart => ", abc.PriceStart)
-		fmt.Println(abc.Id, ": PriceEnd => ", abc.PriceEnd)
-		if (a.PriceStart <= abc.PriceEnd && a.PriceStart >= abc.PriceStart) ||
-			(a.PriceEnd >= abc.PriceStart && a.PriceEnd <= abc.PriceEnd) {
-			fmt.Println("ติด gap price")
-			return false, errors.New("price start or price end had value in between values before.")
+	sp := []float64{} // start price
+	se := []float64{} // start end
+	for i, ab := range a.Admin_Bank_Condition {
+		fmt.Println("Current PriceStart => ", ab.PriceStart)
+		fmt.Println("Current PriceEnd => ", ab.PriceEnd)
+		if ab.Id == 0 {
+			a.Admin_Bank_Condition[i].CreatedBy = r.c.UI
+			a.Admin_Bank_Condition[i].CreatedAt = _now
 		} else {
-			fmt.Println("pass")
+			for _, b := range as {
+				if b.Id == ab.Id {
+					// Found!
+					a.Admin_Bank_Condition[i].CreatedBy = b.CreatedBy
+					a.Admin_Bank_Condition[i].CreatedAt = b.CreatedAt
+					a.Admin_Bank_Condition[i].AccessToken = b.AccessToken
+					a.Admin_Bank_Condition[i].ApiRefresh = b.ApiRefresh
+					a.Admin_Bank_Condition[i].DeviceId = b.DeviceId
+				}
+			}
 		}
+		a.Admin_Bank_Condition[i].UpdatedBy = r.c.UI
+		a.Admin_Bank_Condition[i].UpdatedAt = _now
+		fmt.Println("a.IsBotActive", a.IsBotActive)
+		a.Admin_Bank_Condition[i].IsActive = a.IsBotActive
+		fmt.Println("come", ab)
+
+		if i != 0 {
+			for u := range sp {
+				if (ab.PriceStart <= se[u] && ab.PriceStart >= sp[u]) ||
+					(ab.PriceEnd >= sp[u] && ab.PriceEnd <= se[u]) {
+					fmt.Println("ติด gap price")
+					return false, errors.New("price start or price end had value in between values before.")
+				} else {
+					fmt.Println("pass")
+				}
+			}
+		}
+		sp = append(sp, ab.PriceStart) // start price
+		se = append(se, ab.PriceEnd)   // start end
 	}
 
-	_now := time.Now().UTC()
-	if a.Id == 0 {
-		a.CreatedBy = r.c.UI
-		a.CreatedAt = _now
-	} else {
-		b := &models.Admin_Bank_Condition{}
-		err := r.c.DB.Find(&b, "id = ?", a.Id).Error
-		if err != nil {
-			fmt.Println("err DB.Find(&bc => ", err)
+	fmt.Println("final condition")
+
+	fmt.Println(a.Admin_Bank_Condition)
+	tx := r.c.DB.Begin()
+	for _, bc := range a.Admin_Bank_Condition {
+		if err := tx.Save(&bc).Error; err != nil {
+			fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
+			tx.Rollback()
 			return false, err
 		}
-		a.CreatedBy = b.CreatedBy
-		a.CreatedAt = b.CreatedAt
-		a.AccessToken = b.AccessToken
-		a.ApiRefresh = b.ApiRefresh
-		a.DeviceId = b.DeviceId
 	}
-	a.UpdatedAt = _now
-	a.UpdatedBy = r.c.UI
-
-	if err := r.c.DB.Save(&a).Error; err != nil {
-		fmt.Println("h.DB.Find(&a) => ", err)
+	if err := tx.Save(&ast).Error; err != nil {
+		fmt.Println("h.DB.Find(&Admin_Setting) => ", err)
+		tx.Rollback()
 		return false, err
 	}
+
+	tx.Commit()
+
 	fmt.Println("h.DB.save Admin_Bank_Condition", a)
 
 	return true, nil
