@@ -22,6 +22,11 @@ type Admin_Bank_Condition struct {
 	UpdatedAt   time.Time `gorm:"not null" json:"updated_at"`
 }
 
+type AdminSettingBotListResult struct {
+	IsBotActive           bool                    `json:"is_bot_active"`
+	AdminSettingBotResult []AdminSettingBotResult `json:"condition_list"`
+}
+
 type AdminSettingBotResult struct {
 	Id          int     `json:"id"`
 	IsActive    bool    `json:"is_active"`

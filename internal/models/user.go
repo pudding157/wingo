@@ -31,7 +31,6 @@ type UserProfile struct {
 	ChildUserNames []string `json:"child_usernames"`
 }
 
-// otp formvalue struct
 type RegisterFormModel struct {
 	FirstName     string `json:"first_name"`
 	LastName      string `json:"last_name"`

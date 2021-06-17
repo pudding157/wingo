@@ -12,6 +12,7 @@ type Admin_Setting struct {
 	UsernameBot     string    `json:"username_bot"`
 	PasswordBot     string    `json:"password_bot"`
 	SelectTextBot   string    `json:"select_text_bot"`
+	IsBotActive     bool      `gorm:"not null;default:1" json:"is_bot_active"`
 	CreatedBy       int       `gorm:"not null" json:"created_by"`
 	UpdatedBy       int       `gorm:"not null" json:"updated_by"`
 	CreatedAt       time.Time `gorm:"not null" json:"created_at"`
