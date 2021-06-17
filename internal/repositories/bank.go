@@ -51,17 +51,16 @@ func (r *BankRepo) GetAdminBanks() ([]models.AdminBankModel, error) {
 
 	a := []models.AdminBankModel{}
 	for i, _b := range b {
-		bn := ""
+		am := models.AdminBankModel{}
 		for _, bb := range banks {
 
 			if bb.Id == _b.BankId {
-				bn = bb.Name
+				am.BankName = bb.Name
+				am.BankId = bb.Id
 				break
 			}
 		}
-		am := models.AdminBankModel{}
 		am.BankAccount = b[i].BankAccount
-		am.BankName = bn
 		a = append(a, am)
 		// b[i].BankName = bn
 	}
