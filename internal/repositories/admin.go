@@ -213,7 +213,7 @@ func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool,
 	ast.UpdatedAt = _now
 
 	as := []models.Admin_Bank_Condition{}
-	err = r.c.DB.Where("is_active = true").Find(&as).Error
+	err = r.c.DB.Find(&as).Error //.Where("is_active = true")
 	if err != nil {
 		fmt.Println("h.DB.Find(&Admin_Bank_Condition) => ", err)
 		return false, err
