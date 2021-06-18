@@ -195,7 +195,7 @@ func (c *Config_db) migrate_other() {
 		c.DB.Create(Admin_Setting)
 		fmt.Println("migrate data Admin_Setting")
 	} else {
-		c.DB.AutoMigrate(&Admin_Setting)
+		// c.DB.AutoMigrate(&Admin_Setting)
 	}
 
 	Admin_Bank_Condition := models.Admin_Bank_Condition{}

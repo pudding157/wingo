@@ -221,9 +221,9 @@ func AddRoutesAdmin(e *echo.Echo, c *app.Config, HomeHandler HomeHandler, AdminH
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 		{ // this sprint
-			HTTPMethod:     http.MethodPost,
+			HTTPMethod:     http.MethodDelete,
 			Endpoint:       "/admin/setting/bot",
-			HandlerFunc:    AdminHandler.PostAdminSettingBot,
+			HandlerFunc:    AdminHandler.DeleteAdminSettingBot,
 			MiddlewareFunc: []echo.MiddlewareFunc{middlewares.AuthAdminMiddleware(c, e)},
 		},
 	}

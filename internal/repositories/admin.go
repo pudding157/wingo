@@ -18,6 +18,7 @@ type AdminRepository interface {
 
 	GetAdminSettingBot() (*models.AdminSettingBotListResult, error)
 	PostAdminSettingBot(a models.AdminSettingBotListBind) (bool, error)
+	DeleteAdminSettingBot() (bool, error)
 	GetBlog(id int) (*models.Blog_Content, error)
 }
 
@@ -296,6 +297,16 @@ func (r *AdminRepo) PostAdminSettingBot(a models.AdminSettingBotListBind) (bool,
 	tx.Commit()
 
 	fmt.Println("h.DB.save Admin_Bank_Condition", a)
+
+	return true, nil
+}
+
+func (r *AdminRepo) DeleteAdminSettingBot() (bool, error) {
+
+	if err := r.c.DB.Delete(&models.Admin_Bank_Condition{}).Error; err != nil {
+		fmt.Println("h.DB.Delete bank => ", err)
+		return false, err
+	}
 
 	return true, nil
 }
