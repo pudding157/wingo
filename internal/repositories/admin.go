@@ -34,7 +34,7 @@ func (r *AdminRepo) PostHome(pc models.Page_Content) (*models.Page_Content, erro
 
 	fmt.Println("Post all text in home")
 	as := &models.Page_Content{}
-	err := r.c.DB.Find(&as).Error
+	err := r.c.DB.Where("id = ?", 1).Find(&as).Error
 	if err != nil {
 		fmt.Println("h.DB.Find(&Page_Content) => ", err)
 		return nil, err
