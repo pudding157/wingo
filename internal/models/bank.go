@@ -16,7 +16,7 @@ type AdminBank struct {
 }
 
 type AdminBankModel struct {
-	BankId      int    `json:"bank_id"`
+	BankId      int    `json:"id"`
 	BankName    string `json:"name"`
 	BankAccount string `gorm:"unique;not null" json:"bank_account"`
 }
