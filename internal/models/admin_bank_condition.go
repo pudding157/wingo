@@ -23,7 +23,7 @@ type Admin_Bank_Condition struct {
 }
 
 type AdminSettingBotListBind struct {
-	IsBotActive          bool                   `json:"is_active"`
+	IsBotActive          bool                   `json:"is_bot_active"`
 	Admin_Bank_Condition []Admin_Bank_Condition `json:"condition_list"`
 }
 
