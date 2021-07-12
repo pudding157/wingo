@@ -14,7 +14,7 @@ import (
 type PaymentRepository interface {
 	Deposit(uh models.User_History) error
 	Withdraw(uh models.User_History) error
-	Transactions(t models.LoadMoreModel) ([]models.User_bind_history, int64, error)
+	Transactions(t models.LoadMoreModel) ([]models.User_Bind_History, int64, error)
 }
 
 type PaymentRepo struct {
@@ -66,7 +66,7 @@ func (r *PaymentRepo) Withdraw(uh models.User_History) error {
 	return nil
 }
 
-func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_bind_history, int64, error) {
+func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_Bind_History, int64, error) {
 	fmt.Println("transaction type => ", t)
 	kt, err := utils.EnumFromKey(t.Type, utils.GetEnumArray("transactionType"))
 	if err != nil {
@@ -78,18 +78,14 @@ func (r *PaymentRepo) Transactions(t models.LoadMoreModel) ([]models.User_bind_h
 		cs += " and type = " + strconv.Itoa(kt.Index())
 	}
 
-	u := []models.User_bind_history{}
+	u := []models.User_Bind_History{}
 	c := 0
-	// if err := r.c.DB.Model(&uh).Count(&c).Error; err != nil {
-	// 	fmt.Println("h.DB.COUNT User_History error =>", err)
-	// 	return nil, int64(0), err
-	// }
 	if err := r.c.DB.Model(&uh).Where(cs).Count(&c).Limit(t.Take).Offset(t.Skip).Order("created_at desc").Find(&uh, cs).Error; err != nil {
 		fmt.Println("h.DB.Find User_History error => ", err)
 		return nil, int64(0), err
 	}
 	for _, uhs := range uh {
-		ubh := models.User_bind_history{}
+		ubh := models.User_Bind_History{}
 		ubh.AdminBankAccount = uhs.AdminBankAccount
 		ubh.Amount = uhs.Amount
 		ubh.Type = uhs.Type

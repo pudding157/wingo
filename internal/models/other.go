@@ -10,6 +10,7 @@ type JWTCustomClaims struct {
 type RedisValue struct {
 	UserId     int    `json:"user_id"`
 	ExpireDate string `json:"expire_date"`
+	RoleName   string `json:"role_name"`
 }
 
 // otp formvalue struct

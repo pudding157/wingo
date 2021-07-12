@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 	"winapp/internal/app"
 	"winapp/internal/models"
@@ -33,14 +34,14 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	if len(Bind_registerFormModel.Password) < 8 {
 		return nil, errors.New("Password lower than 8 characters.")
 	}
-	if Bind_registerFormModel.Bank_id == 0 {
+	if Bind_registerFormModel.BankId == 0 {
 		return nil, errors.New("Please select the bank.")
 	}
 
-	User_bank := models.User_Bank{}
-	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.Bank_account).Find(&User_bank).Error
+	ub := models.User_Bank{}
+	err := r.c.DB.Where("bank_account = ?", Bind_registerFormModel.BankAccount).Find(&ub).Error
 	if err == nil {
-		fmt.Println("bank account already exist", User_bank)
+		fmt.Println("bank account already exist", ub)
 		return nil, errors.New("bank account already exist.")
 	}
 
@@ -55,30 +56,54 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	s := utils.StringWithCharset(16, charset)
 
 	u.Affiliate = s
-	u.First_name = Bind_registerFormModel.First_name
-	u.Last_name = Bind_registerFormModel.Last_name
-	u.Phone_number = Bind_registerFormModel.Phone_number
+	u.FirstName = Bind_registerFormModel.FirstName
+	u.LastName = Bind_registerFormModel.LastName
+	u.PhoneNumber = Bind_registerFormModel.PhoneNumber
 	u.Username = Bind_registerFormModel.Username
 	u.Password = _passwordHashed
 	_now := time.Now().UTC() //.Format(time.RFC3339)
-	u.Created_at = _now
-	u.Updated_at = _now
-	u.Registration_otp = strconv.Itoa(Bind_registerFormModel.Otp)
+	u.CreatedAt = _now
+	u.UpdatedAt = _now
+	u.RegistrationOtp = strconv.Itoa(Bind_registerFormModel.Otp)
 
-	if err := r.c.DB.Save(&u).Error; err != nil {
-		log.Print("err => ", err)
-		return nil, err
-	}
-	User_bank.BankId = Bind_registerFormModel.Bank_id
-	User_bank.BankAccount = Bind_registerFormModel.Bank_account
-	User_bank.UserId = u.Id
-	User_bank.Created_at = _now
-
-	if err := r.c.DB.Save(&User_bank).Error; err != nil {
-		log.Print("err => ", err)
-		return nil, err
+	if strings.Contains(u.Username, "admin") {
+		u.Status = utils.SUPERADMIN.Index()
 	}
 
+	pid := r.CheckParentAffiliate(Bind_registerFormModel.AffiliateCode)
+	if pid != nil && *pid != 0 {
+		u.ParentUserId = pid
+	}
+
+	tx := r.c.DB.Begin()
+	if err := tx.Save(&u).Error; err != nil {
+		log.Print("err => ", err)
+		tx.Rollback()
+		return nil, err
+	}
+	ub.BankId = Bind_registerFormModel.BankId
+	ub.BankAccount = Bind_registerFormModel.BankAccount
+	ub.UserId = u.Id
+	ub.CreatedAt = _now
+
+	if err := tx.Save(&ub).Error; err != nil {
+		log.Print("err => ", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	uw := models.User_Wallet{}
+	uw.UserId = u.Id
+	uw.Amount = 0
+	uw.CreatedAt = _now
+	uw.UpdatedAt = _now
+
+	if err := tx.Save(&uw).Error; err != nil {
+		log.Print("err => ", err)
+		tx.Rollback()
+		return nil, err
+	}
+	tx.Commit()
 	// gen token for start login
 	t, err := r.lr.GenToken(u)
 	if err != nil {
@@ -86,6 +111,23 @@ func (r *RegisterRepo) Register(Bind_registerFormModel models.RegisterFormModel)
 	}
 
 	return t, nil
+}
+
+// ac = Affiliate code
+func (r *RegisterRepo) CheckParentAffiliate(ac string) *int {
+	u := models.User{}
+	pid := 0
+	fmt.Println("ac => ", ac)
+
+	err := r.c.DB.Where("affiliate = ?", ac).Find(&u).Error
+	if err != nil {
+		fmt.Println(ac+" : user by affiliate not found", err)
+		return nil
+	} else {
+		pid = u.Id
+	}
+
+	return &pid
 }
 
 func (r *RegisterRepo) Otp_send(phone_number string) (*models.OtpModel, error) {

@@ -27,29 +27,6 @@ func NewUserRepo(c *app.Config, lr *LoginRepo) *UserRepo {
 }
 
 func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
-
-	// auth_header := c.Request().Header.Get("Authorization")
-	// auth_len := len(auth_header)
-	// token := auth_header[7:auth_len]
-
-	// fmt.Println("token :", token)
-
-	// claims := jwt.MapClaims{}
-
-	// t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-	// 	return []byte("secret"), nil
-	// })
-	// if err != nil || t == nil {
-	// 	fmt.Println("token err", err)
-	// 	return nil, err
-	// }
-	// // do something with decoded claims
-	// // for key, val := range claims {
-	// // 	fmt.Printf("Key: %v, value: %v\n", key, val)
-	// // }
-	// userid := claims["user_id"]
-	// // userid := c.Param("userid")
-	// fmt.Println("userid :", userid)
 	User := models.User{}
 	fmt.Println("get profile", r.c)
 
@@ -76,18 +53,47 @@ func (r *UserRepo) GetProfile() (*models.UserProfile, error) {
 
 	User_Profile := models.UserProfile{}
 	User_Profile.Username = User.Username
-	User_Profile.Name = User.First_name + " " + User.Last_name
-	User_Profile.PhoneNumber = User.Phone_number
+	User_Profile.Name = User.FirstName + " " + User.LastName
+	User_Profile.PhoneNumber = User.PhoneNumber
 	User_Profile.BankAccount = User_bank.BankAccount
 	User_Profile.BankName = Bank.Name
 	es := utils.GetEnumArray("userStatus")
 	fmt.Println(es)
 	mt, _err := utils.EnumFromIndex(User.Status, es)
 	if _err != nil {
-		fmt.Println(_err)
+		fmt.Println("EnumFromIndex(User.Status, es) => ", _err)
 	}
 
 	User_Profile.Status = mt.String(es)
+
+	cu := []models.User{}
+	err = r.c.DB.Where("parent_user_id = ?", User.Id).Find(&cu).Error
+	if err != nil {
+		fmt.Println("User DB parent_user_id => ", err)
+		return nil, err
+	} else {
+		for _, _u := range cu {
+			name := utils.HiddenLastString(4, _u.Username)
+			User_Profile.ChildUserNames = append(User_Profile.ChildUserNames, name)
+		}
+	}
+	fmt.Println("before User.ParentUserId", User.ParentUserId)
+	if User.ParentUserId != nil && *User.ParentUserId != 0 {
+		fmt.Println("after User.ParentUserId", User.ParentUserId)
+		pu := models.User{}
+		err := r.c.DB.Where("id = ?", User.ParentUserId).Find(&pu).Error
+		if err != nil {
+			fmt.Println("User DB => ", err)
+			return nil, err
+		}
+		re := utils.HiddenLastString(4, pu.Username)
+		// re := regexp.MustCompile(`\w{4}$`).ReplaceAllString(pu.Username, "")
+		User_Profile.ParentUserName = &re
+	} else {
+		User_Profile.ParentUserName = nil
+	}
+
+	fmt.Println("end User_Profile => ", User_Profile)
 
 	return &User_Profile, nil
 }
@@ -121,19 +127,22 @@ func (r *UserRepo) ChangePassword(ph models.Password_History) (*string, error) {
 	fmt.Println("old => ", u.Password)
 	u.Password = _pwd
 
-	if err := r.c.DB.Save(&u).Error; err != nil {
+	tx := r.c.DB.Begin()
+	if err := tx.Save(&u).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
 
 	fmt.Println("newest => ", u.Password)
 	ph.NewPassword = _pwd
 
-	if err := r.c.DB.Save(&ph).Error; err != nil {
+	if err := tx.Save(&ph).Error; err != nil {
 		log.Print("err => ", err)
+		tx.Rollback()
 		return nil, err
 	}
-
+	tx.Commit()
 	err = r.lr.Logout() // force logout and clear token
 	if err != nil {
 		return nil, err
@@ -160,7 +169,7 @@ func (r *UserRepo) GetAffiliate() (*string, error) {
 	}
 	if u.Affiliate == "" {
 		s := utils.StringWithCharset(16, charset)
-		r.c.DB.Model(&u).Updates(models.User{Updated_at: time.Now().UTC(), Affiliate: s})
+		r.c.DB.Model(&u).Updates(models.User{UpdatedAt: time.Now().UTC(), Affiliate: s})
 		return &s, nil
 	}
 

@@ -26,7 +26,7 @@ func NewPaymentHandler(repo repositories.PaymentRepository) *PaymentHandler {
 
 func (r *PaymentHandler) Deposit(c echo.Context) error {
 	_res := models.Response{}
-	ub := models.User_bind_history{}
+	ub := models.User_Bind_History{}
 	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.AdminBankAccount = ub.AdminBankAccount
@@ -65,7 +65,7 @@ func (r *PaymentHandler) Deposit(c echo.Context) error {
 
 func (r *PaymentHandler) Withdraw(c echo.Context) error {
 	_res := models.Response{}
-	ub := models.User_bind_history{} // แค่ไว้รับ
+	ub := models.User_Bind_History{} // แค่ไว้รับ
 	c.Bind(&ub)
 	uh := models.User_History{}
 	uh.Amount = ub.Amount

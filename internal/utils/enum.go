@@ -11,8 +11,10 @@ const (
 	PHONE_NUMBER Enum = 0 // otp type
 	EMAIL        Enum = 1 // otp type
 
-	MEMBER Enum = 0 // user status
-	VIP    Enum = 1 // user
+	MEMBER     Enum = 0 // user status
+	VIP        Enum = 1 // user
+	ADMIN      Enum = 2
+	SUPERADMIN Enum = 3
 
 	AWAITING Enum = 0 // user status
 	APPROVED Enum = 1 // user status
@@ -31,6 +33,8 @@ var otpTypeStrings = []string{
 var userStatusString = []string{
 	"member", // user type
 	"vip",    // user type
+	"admin",
+	"super-admin",
 }
 
 var depositStatusString = []string{

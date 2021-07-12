@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -85,4 +87,16 @@ func StringWithCharset(length int, charset string) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+// replace last cnt from string to "xxxx"
+// ex. abcdefg add cnt = 2 result = abcdexxxx
+func HiddenLastString(cnt int, s string) string {
+
+	c := strconv.Itoa(cnt)
+
+	re := regexp.MustCompile(`\w{`+c+`}$`).ReplaceAllString(s, "") + "xxxx"
+	fmt.Println("test reg string before => ", s)
+	fmt.Println("test reg string after => ", re)
+	return re
 }

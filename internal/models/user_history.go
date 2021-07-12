@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type User_bind_history struct {
+type User_Bind_History struct {
 	AdminBankAccount string  `json:"bank_account"`
 	Amount           float64 `json:"amount"`
 	Type             int     `json:"type"`
